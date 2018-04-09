@@ -1,1 +1,18 @@
-/* You can add global styles to this file, and also import other style files */
+/**
+ * Put footer at the bottom of the page.
+ *
+ * Divide the whole page into 3 parts: header, main, footer.
+ * @see http://cssreset.com/how-to-keep-footer-at-bottom-of-page-with-css/
+ * @see http://www.chming.tw/blog/2014/09/03/collapsing-margins/
+ */
+html { height: 100%; padding: 0; }
+body {
+    padding: 0;
+	min-height: 100%;
+	position: relative;
+}
+body > footer, app-root > footer {
+	width: 100%;
+	position: absolute;
+	bottom: 0;
+}

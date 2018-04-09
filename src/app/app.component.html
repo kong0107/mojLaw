@@ -1,22 +1,22 @@
-<header>
-  <h1>
-    Welcome to {{ title }}!
-  </h1>
+<header class="bg-dark text-white clearfix py-1 d-print-none">
+  <div class="container">
+    <div class="row">
+      <div class="col-sm-8">法規查詢</div>
+      <!--div class="col-sm-4 text-right">
+          <input type="search" class="form-control py-0" placeholder="還沒好的搜尋功能">
+      </div-->
+    </div>
+  </div>
 </header>
-<main>
-  <h2>Here are some links to help you start: </h2>
-  <ul>
-    <li>
-      <h2><a target="_blank" rel="noopener" href="https://angular.io/tutorial">Tour of Heroes</a></h2>
-    </li>
-    <li>
-      <h2><a target="_blank" rel="noopener" href="https://github.com/angular/angular-cli/wiki">CLI Documentation</a></h2>
-    </li>
-    <li>
-      <h2><a target="_blank" rel="noopener" href="https://blog.angular.io/">Angular blog</a></h2>
-    </li>
-  </ul>
+
+<main class="clearfix py-2">
+  <div class="container">
+    <router-outlet></router-outlet>
+  </div>
 </main>
-<footer>
-  This is the footer.
+
+<footer class="bg-secondary text-white py-1 d-print-none">
+  <div class="container">
+    <a href="https://github.io/kong0107/mojLaw/" class="text-light">網站原始碼</a>
+  </div>
 </footer>
