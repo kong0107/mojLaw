@@ -1,3 +1,28 @@
-<p>
-  law works!
-</p>
+<h1>{{data["法規名稱"]}}</h1>
+
+<ng-container *ngFor="let attr of attributes">
+  <dl *ngIf="['法規名稱', '法規內容', '附件'].indexOf(attr) == -1" class="row m-0">
+    <dt class="col-sm-2 px-0">{{attr}}</dt>
+    <dd class="col-sm-10">{{data[attr]}}</dd>
+  </dl>
+</ng-container>
+
+<dl *ngIf="data['附件']" class="row">
+    <dt class="col-sm-2">附件</dt>
+    <dd class="col-sm-10">
+        <ol>
+            <li *ngFor="let annex of data['附件']">
+                <a href="{{annex}}">{{annex}}</a>
+            </li>
+        </ol>
+    </dd>
+</dl>
+
+<h2>法規內容</h2>
+<ng-container *ngFor="let article of data['法規內容']">
+    <h3 *ngIf="article['編章節']" class="offset-1" [id]="article['編章節']">{{article['編章節']}}</h3>
+    <dl *ngIf="!article['編章節']" class="row m-0">
+        <dt class="col-1 px-0" [id]="article['條號']">{{article['條號']}}</dt>
+        <dd class="col-11 m-0"><pre>{{article['條文內容']}}</pre></dd>
+    </dl>
+</ng-container>

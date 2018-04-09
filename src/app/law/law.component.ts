@@ -11,6 +11,7 @@ import { Location } from '@angular/common';
 export class LawComponent implements OnInit {
   PCode: string = "";
   data: any = {};
+  attributes = [];
 
   constructor(
     private http: HttpClient,
@@ -21,7 +22,11 @@ export class LawComponent implements OnInit {
   ngOnInit() {
     const dir = (location.hostname == "localhost") ? "./assets" : "";
     this.PCode = this.route.snapshot.paramMap.get("PCode");
-    this.http.get(dir + `/mojLawSplitJSON/FalVMingLing/${this.PCode}.json`).subscribe(data => this.data = data);
+    this.http.get(dir + `/mojLawSplitJSON/FalVMingLing/${this.PCode}.json`)
+      .subscribe(data => {
+        this.data = data;
+        for(let attr in data) this.attributes.push(attr);
+      });
   }
 
 }
