@@ -3,7 +3,7 @@
     <div>
         <time class="text-muted small" title="最新異動日期">{{law.lastUpdate}}</time>
         <h2 class="m-0" style="font-size: 20px; font-weight: bold;">
-            <a [routerLink]="'/laws/'+law.PCode">{{law.name}}</a>
+            <a routerLink="/laws/{{law.PCode}}">{{law.name}}</a>
         </h2>
     </div>
     <p *ngIf="law.english" class="m-0">{{law.english}}</p>
