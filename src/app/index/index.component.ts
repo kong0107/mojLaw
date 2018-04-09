@@ -13,7 +13,7 @@ export class IndexComponent implements OnInit {
 
   ngOnInit() {
     const dir = (location.hostname == "localhost") ? "./assets" : "";
-    this.http.get(dir + "/mojLawSplitJSON/index.json").subscribe(data =>
+    this.http.get<Array<any>>(dir + "/mojLawSplitJSON/index.json").subscribe(data =>
       this.laws = data.sort((a, b) => b.lastUpdate - a.lastUpdate)
     );
   }
