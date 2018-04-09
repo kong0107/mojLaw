@@ -1,2 +1,22 @@
 <h1>法規列表</h1>
-<p>還沒好</p>
+<article *ngFor="let law of laws.slice(0, 200)" class="border-left border-dark px-2 my-3">
+    <div>
+        <time class="text-muted small" title="最新異動日期">{{law.lastUpdate}}</time>
+        <h2 class="m-0" style="font-size: 20px; font-weight: bold;">
+            <a [routerLink]="'/laws/'+law.PCode">{{law.name}}</a>
+        </h2>
+    </div>
+    <p *ngIf="law.english" class="m-0">{{law.english}}</p>
+    <section *ngIf="law.oldNames" class="row">
+        <div class="col-1 pr-0">舊名</div>
+        <ul class="col-11 list-unstyled mb-0">
+            <li *ngFor="let name of law.oldNames">{{name}}</li>
+        </ul>
+    </section>
+    <section *ngIf="law.updates" class="row">
+        <div class="col-1 pr-0">沿革</div>
+        <ul class="col-11 list-inline mb-0">
+            <li *ngFor="let date of law.updates" class="list-inline-item"><time>{{date}}</time></li>
+        </ul>
+    </section>
+</article>
