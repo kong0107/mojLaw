@@ -1,0 +1,17 @@
+<ng-container *ngFor="let attr of attributes">
+  <dl *ngIf="['法規名稱', '法規內容', '附件'].indexOf(attr) == -1" class="row m-0">
+    <dt class="col-sm-2 px-0">{{attr}}</dt>
+    <dd class="col-sm-10">{{data[attr]}}</dd>
+  </dl>
+</ng-container>
+
+<dl *ngIf="data['附件']" class="row">
+    <dt class="col-sm-2">附件</dt>
+    <dd class="col-sm-10">
+        <ol>
+            <li *ngFor="let annex of data['附件']">
+                <a href="{{annex}}">{{annex}}</a>
+            </li>
+        </ol>
+    </dd>
+</dl>

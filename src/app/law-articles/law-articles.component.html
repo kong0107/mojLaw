@@ -1,0 +1,8 @@
+<h2>法規內容</h2>
+<ng-container *ngFor="let article of articles">
+    <h3 *ngIf="article['編章節']" class="offset-1" [id]="article['編章節']">{{article['編章節']}}</h3>
+    <dl *ngIf="!article['編章節']" class="row m-0">
+        <dt class="col-md-1 px-0" [id]="article['條號']">{{article['條號']}}</dt>
+        <dd class="col-md-11 m-0"><pre>{{article['條文內容']}}</pre></dd>
+    </dl>
+</ng-container>

@@ -3,14 +3,14 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { ActivatedRoute } from '@angular/router';
 
 @Component({
-  selector: 'app-law',
-  templateUrl: './law.component.html',
-  styleUrls: ['./law.component.css']
+  selector: 'app-law-articles',
+  templateUrl: './law-articles.component.html',
+  styleUrls: ['./law-articles.component.css']
 })
-export class LawComponent implements OnInit {
-  PCode: string = "";
-  data: any = {};
-
+export class LawArticlesComponent implements OnInit {
+  PCode: string = '';
+  articles: Array<any> = [];
+  
   constructor(
     private http: HttpClient,
     private route: ActivatedRoute
@@ -18,9 +18,8 @@ export class LawComponent implements OnInit {
 
   ngOnInit() {
     const dir = (location.hostname == "localhost") ? "./assets" : "";
-    this.PCode = this.route.snapshot.paramMap.get("PCode");
+    this.PCode = this.route.parent.snapshot.paramMap.get("PCode");
     this.http.get(dir + `/mojLawSplitJSON/FalVMingLing/${this.PCode}.json`)
-      .subscribe(data => this.data = data);
+      .subscribe(data => this.articles = data["法規內容"]);
   }
-
 }

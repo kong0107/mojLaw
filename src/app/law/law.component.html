@@ -1,28 +1,17 @@
-<h1>{{data["法規名稱"]}}</h1>
+<h1 style="font-size: 20px">
+    {{data["法規名稱"]}}
+    <p *ngIf="data['是否英譯註記']=='Y'" class="small">{{data["英文法規名稱"]}}</p>
+</h1>
 
-<ng-container *ngFor="let attr of attributes">
-  <dl *ngIf="['法規名稱', '法規內容', '附件'].indexOf(attr) == -1" class="row m-0">
-    <dt class="col-sm-2 px-0">{{attr}}</dt>
-    <dd class="col-sm-10">{{data[attr]}}</dd>
-  </dl>
-</ng-container>
+<nav>
+    <ul class="nav nav-tabs">
+        <li class="nav-item">
+            <a class="nav-link" routerLink="./articles" routerLinkActive="active">所有條文</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" routerLink="./detail" routerLinkActive="active">詳細資料</a>
+        </li>
+    </ul>
+</nav>
 
-<dl *ngIf="data['附件']" class="row">
-    <dt class="col-sm-2">附件</dt>
-    <dd class="col-sm-10">
-        <ol>
-            <li *ngFor="let annex of data['附件']">
-                <a href="{{annex}}">{{annex}}</a>
-            </li>
-        </ol>
-    </dd>
-</dl>
-
-<h2>法規內容</h2>
-<ng-container *ngFor="let article of data['法規內容']">
-    <h3 *ngIf="article['編章節']" class="offset-1" [id]="article['編章節']">{{article['編章節']}}</h3>
-    <dl *ngIf="!article['編章節']" class="row m-0">
-        <dt class="col-1 px-0" [id]="article['條號']">{{article['條號']}}</dt>
-        <dd class="col-11 m-0"><pre>{{article['條文內容']}}</pre></dd>
-    </dl>
-</ng-container>
+<router-outlet></router-outlet>
