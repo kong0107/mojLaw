@@ -1,5 +1,24 @@
-<h1>法規列表</h1>
-<article *ngFor="let law of laws.slice(0, 200)" class="border-left border-dark px-2 my-3">
+<div>
+    <div class="my-2"><input [(ngModel)]="settings.query" placeholder="搜尋" (input)="filter()"></div>
+    <nav *ngIf="pages.length > 1">
+      <ul class="pagination">
+        <li *ngIf="page > 2" class="page-item" [class.active]="page==0">
+            <button class="page-link" (click)="page = 0">1</button>
+        </li>
+        <li *ngIf="page > 3" class="page-item">...</li>
+
+        <li *ngFor="let p of pages.slice(page > 2 ? (page - 2) : 0, page + 3)" class="page-item" [class.active]="p==page">
+            <button class="page-link" (click)="page = p">{{p + 1}}</button>
+        </li>
+
+        <li *ngIf="page < pages.length - 4" class="page-item">...</li>
+        <li *ngIf="page < pages.length - 3" class="page-item" [class.active]="page == pages.length - 1">
+            <button class="page-link" (click)="page = pages.length - 1">{{pages.length}}</button>
+        </li>
+      </ul>
+    </nav>
+</div>
+<article *ngFor="let law of filtered.slice(page * itemsPerPage, (page + 1) * itemsPerPage)" class="border-left border-dark px-2 my-3">
     <div>
         <time class="text-muted small" title="最新異動日期">{{law.lastUpdate}}</time>
         <h2 class="m-0" style="font-size: 20px; font-weight: bold;">
@@ -7,15 +26,15 @@
         </h2>
     </div>
     <p *ngIf="law.english" class="m-0">{{law.english}}</p>
-    <section *ngIf="law.oldNames" class="row">
-        <div class="col-1 pr-0">舊名</div>
-        <ul class="col-11 list-unstyled mb-0">
+    <section *ngIf="law.oldNames" class="clearfix">
+        <div class="float-left"><strong>舊名</strong></div>
+        <ul class="list-unstyled mb-0" style="margin-left: 2.5em">
             <li *ngFor="let name of law.oldNames">{{name}}</li>
         </ul>
     </section>
-    <section *ngIf="law.updates" class="row">
-        <div class="col-1 pr-0">沿革</div>
-        <ul class="col-11 list-inline mb-0">
+    <section *ngIf="law.updates" class="clearfix">
+        <div class="float-left"><strong>沿革</strong></div>
+        <ul class="list-inline mb-0" style="margin-left: 2.5em">
             <li *ngFor="let date of law.updates" class="list-inline-item"><time>{{date}}</time></li>
         </ul>
     </section>

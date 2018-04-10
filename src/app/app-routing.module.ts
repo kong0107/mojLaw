@@ -6,6 +6,7 @@ import { LawComponent } from './law/law.component';
 
 const routes: Routes = [
   { path: '', component: IndexComponent, pathMatch: 'full' },
+  { path: 'search/:query', component: IndexComponent },
   { path: 'laws/:PCode', component: LawComponent },
   { path: '**', redirectTo: '/' }
 ];

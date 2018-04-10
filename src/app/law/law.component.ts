@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { ActivatedRoute } from '@angular/router';
-import { Location } from '@angular/common';
 
 @Component({
   selector: 'app-law',
@@ -15,8 +14,7 @@ export class LawComponent implements OnInit {
 
   constructor(
     private http: HttpClient,
-    private route: ActivatedRoute,
-    private location: Location
+    private route: ActivatedRoute
   ) { }
 
   ngOnInit() {
