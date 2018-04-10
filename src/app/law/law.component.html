@@ -3,7 +3,7 @@
     <p *ngIf="data['是否英譯註記']=='Y'" class="small">{{data["英文法規名稱"]}}</p>
 </h1>
 
-<nav>
+<!--nav>
     <ul class="nav nav-tabs">
         <li class="nav-item">
             <a class="nav-link" routerLink="./articles" routerLinkActive="active">所有條文</a>
@@ -12,6 +12,52 @@
             <a class="nav-link" routerLink="./detail" routerLinkActive="active">詳細資料</a>
         </li>
     </ul>
-</nav>
+</nav-->
 
-<router-outlet></router-outlet>
+<details>
+    <summary>詳細資料</summary>
+    <ng-container *ngFor="let attr of attributes">
+        <dl *ngIf="['法規名稱', '法規內容', '附件'].indexOf(attr) == -1" class="row m-0">
+            <dt class="col-sm-2 px-0">{{attr}}</dt>
+            <dd class="col-sm-10"><pre class="m-0">{{data[attr]}}</pre></dd>
+        </dl>
+    </ng-container>
+
+    <dl *ngIf="data['附件']" class="row">
+        <dt class="col-sm-2">附件</dt>
+        <dd class="col-sm-10">
+            <ol>
+                <li *ngFor="let annex of data['附件']">
+                    <a href="{{annex}}">{{annex}}</a>
+                </li>
+            </ol>
+        </dd>
+    </dl>
+</details>
+
+<section>
+    <h2>法規內容</h2>
+  <div class="d-lg-flex flex-row-reverse">
+    <div class="col-lg-4">
+        <ul class="list-unstyled">
+            <li *ngFor="let chapter of chapters; index as i" class="row" [class]="chapter.type">
+                <div class="col"><a [href]="'/laws/' + PCode + '#' +chapter.raw">{{chapter.raw}}</a></div>
+                <!--div class="col">{{english.chapters[i]}}</div-->
+            </li>
+        </ul>
+    </div>
+    <div class="col-lg-8">
+        <ng-container *ngFor="let article of articles; index as i">
+            <h3 *ngIf="article['編章節']" class="offset-2 row" [id]="article['編章節']">
+                <div class="col">{{article['編章節']}}</div>
+                <!--div class="col">{{english["法規內容"][i]['編章節']}}</div-->
+            </h3>
+            <dl *ngIf="!article['編章節']" class="row m-0">
+                <dt class="col-md-2 px-0" [id]="article['條號']">{{article['條號']}}</dt>
+                <dd class="col-md-10 m-0"><pre>{{article['條文內容']}}</pre></dd>
+                <!--dd class="col m-0">{{english["法規內容"][i]['條文內容']}}</dd-->
+            </dl>
+        </ng-container>
+    </div>
+  </div>
+</section>

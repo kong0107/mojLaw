@@ -9,12 +9,7 @@ import { LawDetailComponent } from './law-detail/law-detail.component';
 const routes: Routes = [
   { path: '', component: IndexComponent, pathMatch: 'full' },
   { path: 'search/:query', component: IndexComponent },
-  { path: 'laws/:PCode', component: LawComponent, children: [
-      { path: '', redirectTo: 'articles', pathMatch: 'full' },
-      { path: 'articles', component: LawArticlesComponent, pathMatch: 'full' },
-      { path: 'detail', component: LawDetailComponent }
-    ]
-  },
+  { path: 'laws/:PCode', component: LawComponent },
   { path: '**', redirectTo: '/' }
 ];
 

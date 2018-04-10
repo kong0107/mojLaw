@@ -41,10 +41,6 @@ export class IndexComponent implements OnInit {
     }, 100);
   }
 
-  setPage(page: number) {
-    this.page = page;
-  }
-
   ngOnInit() {
     this.settings.query = this.route.snapshot.paramMap.get("query") || "";
 
