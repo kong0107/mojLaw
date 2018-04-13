@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { ActivatedRoute } from '@angular/router';
+import { Title } from '@angular/platform-browser';
+
+import { LawService } from '../law.service';
 
 @Component({
   selector: 'app-index',
@@ -8,7 +10,7 @@ import { ActivatedRoute } from '@angular/router';
   styleUrls: ['./index.component.css']
 })
 export class IndexComponent implements OnInit {
-  laws: any = [];
+  lawList: any = [];
   query: string = "";
   filtered: any = [];
   page: number = 0;
@@ -19,8 +21,9 @@ export class IndexComponent implements OnInit {
   };
 
   constructor(
-    private http: HttpClient,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private titleService: Title,
+    private lawService: LawService
   ) { }
 
   filter() {
@@ -28,8 +31,8 @@ export class IndexComponent implements OnInit {
     window.setTimeout(()=> {
       const query = this.settings.query.trim();
       this.filtered = !query
-          ? this.laws
-          : this.laws.filter(law => {
+          ? this.lawList
+          : this.lawList.filter(law => {
             return (law.name.indexOf(query) >= 0);
           })
       ;
@@ -42,14 +45,12 @@ export class IndexComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.titleService.setTitle("法規查詢");
     this.settings.query = this.route.snapshot.paramMap.get("query") || "";
 
-    const dir = (location.hostname == "localhost") ? "./assets" : "";
-    this.http.get<Array<any>>(dir + "/mojLawSplitJSON/index.json").subscribe(data => {
-      this.laws = data.sort((a, b) => b.lastUpdate - a.lastUpdate);
+    this.lawService.getAll().subscribe(data => {
+      this.lawList = data;
       this.filter();
     });
-
-    window["indexComponent"] = this;
   }
 }

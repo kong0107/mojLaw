@@ -10,6 +10,7 @@ import { IndexComponent } from './index/index.component';
 import { LawComponent } from './law/law.component';
 import { LawArticlesComponent } from './law-articles/law-articles.component';
 import { LawDetailComponent } from './law-detail/law-detail.component';
+import { LawService } from './law.service';
 
 
 @NgModule({
@@ -26,7 +27,7 @@ import { LawDetailComponent } from './law-detail/law-detail.component';
     HttpClientModule,
     FormsModule
   ],
-  providers: [],
+  providers: [LawService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
