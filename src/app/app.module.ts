@@ -11,6 +11,7 @@ import { LawComponent } from './law/law.component';
 import { LawArticlesComponent } from './law-articles/law-articles.component';
 import { LawDetailComponent } from './law-detail/law-detail.component';
 import { LawService } from './law.service';
+import { LoadingComponent } from './loading/loading.component';
 
 
 @NgModule({
@@ -19,7 +20,8 @@ import { LawService } from './law.service';
     IndexComponent,
     LawComponent,
     LawArticlesComponent,
-    LawDetailComponent
+    LawDetailComponent,
+    LoadingComponent
   ],
   imports: [
     BrowserModule,

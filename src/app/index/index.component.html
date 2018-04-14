@@ -18,6 +18,9 @@
       </ul>
     </nav>
 </div>
+
+<app-loading *ngIf="!lawList.length"></app-loading>
+
 <article *ngFor="let law of filtered.slice(page * itemsPerPage, (page + 1) * itemsPerPage)" class="border-left border-dark px-2 my-3">
     <div>
         <time class="text-muted small" title="最新異動日期">{{law.lastUpdate}}</time>

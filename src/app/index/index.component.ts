@@ -11,14 +11,15 @@ import { LawService } from '../law.service';
 })
 export class IndexComponent implements OnInit {
   lawList: any = [];
-  query: string = "";
+
   filtered: any = [];
-  page: number = 0;
-  pages: Array<number> = [];
-  readonly itemsPerPage: number = 15;
   settings = {
     query: ""
   };
+
+  page: number = 0;
+  pages: Array<number> = [];
+  readonly itemsPerPage: number = 15;
 
   constructor(
     private route: ActivatedRoute,

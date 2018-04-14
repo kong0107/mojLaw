@@ -37,6 +37,7 @@
 
 <section>
   <h2>法規內容</h2>
+  <app-loading *ngIf="!articles.length"></app-loading>
   <div class="d-lg-flex flex-row-reverse">
     <div class="col-lg-4">
         <ul class="list-unstyled">

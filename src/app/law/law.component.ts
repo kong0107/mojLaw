@@ -42,7 +42,5 @@ export class LawComponent implements OnInit {
         return article;
       });
     });
-
-    window["lawComponent"] = this;
   }
 }
