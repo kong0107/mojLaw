@@ -1,13 +1,6 @@
 <header class="bg-dark text-white clearfix py-1 d-print-none">
   <div class="container">
-    <div class="row">
-      <div class="col-sm-8">
-        <a routerLink="/">法規查詢</a>
-      </div>
-      <!--div class="col-sm-4 text-right">
-          <input type="search" class="form-control py-0" placeholder="還沒好的搜尋功能">
-      </div-->
-    </div>
+    <app-header></app-header>
   </div>
 </header>
 
@@ -19,6 +12,10 @@
 
 <footer class="bg-secondary text-white py-1 d-print-none">
   <div class="container">
-    <a href="https://github.io/kong0107/mojLaw/" class="text-light">網站原始碼</a>
+    <ul class="list-inline m-0">
+      <li class="list-inline-item px-3"><a href="https://github.com/kong0107/mojLaw/" class="text-light">網站原始碼</a></li>
+      <li class="list-inline-item px-3"><a href="http://law.moj.gov.tw/PublicData/DevelopGuide.aspx" class="text-light">資料來源</a></li>
+      <li class="list-inline-item px-3"><a href="https://github.com/kong0107/mojLawSplit/" class="text-light">資料擷取程式</a></li>
+    </ul>
   </div>
 </footer>

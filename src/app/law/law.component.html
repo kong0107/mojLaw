@@ -1,7 +1,37 @@
-<h1 style="font-size: 20px">
-    {{lawContent["法規名稱"]}}
-    <p class="small">{{lawContent["英文法規名稱"]}}</p>
-</h1>
+<header>
+    <h1 style="font-size: 20px">
+        {{lawContent["法規名稱"]}}
+        <p class="small">{{lawContent["英文法規名稱"]}}</p>
+    </h1>
+    <dl class="row small">
+        <dt class="col-sm-1">性質</dt>
+        <dd class="col-sm-11">{{lawContent["法規性質"]}}</dd>
+
+        <dt class="col-sm-1">類別</dt>
+        <dd class="col-sm-11">{{lawContent["法規類別"]}}</dd>
+
+        <dt class="col-sm-1">更新</dt>
+        <dd class="col-sm-11">{{lawContent["最新異動日期"]}}</dd>
+
+        <dt class="col-sm-1">沿革</dt>
+        <dd class="col-sm-11">
+            <details><pre class="m-0">{{lawContent["沿革內容"]}}</pre></details>
+        </dd>
+    </dl>
+
+    <dl *ngIf="lawContent['附件']" class="row">
+        <dt class="col-sm-1">附件</dt>
+        <dd class="col-sm-11">
+            <details>
+                <ol>
+                    <li *ngFor="let annex of lawContent['附件']">
+                        <a href="{{annex}}">{{annex}}</a>
+                    </li>
+                </ol>
+            </details>
+        </dd>
+    </dl>
+</header>
 
 <!--nav>
     <ul class="nav nav-tabs">
@@ -13,27 +43,6 @@
         </li>
     </ul>
 </nav-->
-
-<details>
-    <summary>詳細資料</summary>
-    <ng-container *ngFor="let attr of attributes">
-        <dl *ngIf="['法規名稱', '法規內容', '附件', '前言'].indexOf(attr) == -1" class="row m-0">
-            <dt class="col-sm-2 px-0">{{attr}}</dt>
-            <dd class="col-sm-10"><pre class="m-0">{{lawContent[attr]}}</pre></dd>
-        </dl>
-    </ng-container>
-
-    <dl *ngIf="lawContent['附件']" class="row">
-        <dt class="col-sm-2">附件</dt>
-        <dd class="col-sm-10">
-            <ol>
-                <li *ngFor="let annex of lawContent['附件']">
-                    <a href="{{annex}}">{{annex}}</a>
-                </li>
-            </ol>
-        </dd>
-    </dl>
-</details>
 
 <section>
   <h2>法規內容</h2>

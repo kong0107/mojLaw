@@ -1,0 +1,9 @@
+<div class="row">
+  <div class="col">
+    <a routerLink="/">法規查詢</a>
+  </div>
+  <div class="col text-right" *ngIf="updateDate">
+    資料更新：<time>{{updateDate}}</time>
+    <span class="align-top small text-muted" style="cursor: help" title="依照「全國法規資料庫」的「法規整編資料截止日」。詳閱「資料來源」連結。">[?]</span>
+  </div>
+</div>
