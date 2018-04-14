@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 
 import { Observable, ReplaySubject } from 'rxjs/Rx';
 import { of } from 'rxjs/observable/of';
-import { map, flatMap } from 'rxjs/operators';
+import { tap, map, flatMap } from 'rxjs/operators';
 
 import { LawInfo, LawContent } from './law';
 
@@ -87,16 +87,21 @@ export class LawService {
     PCode: string,
     date: string
   ): Observable<LawContent> {
-    return this.getLaw(PCode).pipe(
-      flatMap((lawContent: LawContent) => {
-        return this.get<LawContent>(`HisMingLing/${PCode}/${date}_001.json`).pipe(
-          map(oldVersion => {
-            console.log(`Getting old version of ${PCode} on date ${date}`);
-            lawContent.history[date] = oldVersion;
-            return lawContent;
-          })
-        );
-      })
-    );
+    const sub_id = `${PCode}_${date}`;
+    if(!this.subjects[sub_id]) {
+      this.subjects[sub_id] = new ReplaySubject(1);
+      const observable = this.getLaw(PCode).pipe(
+        flatMap((lawContent: LawContent) => {
+          return this.get<LawContent>(`HisMingLing/${PCode}/${date}_001.json`).pipe(
+            tap(oldVersion => {
+              console.log(`Getting old version of ${PCode} on date ${date}`);
+              lawContent.history[date] = oldVersion;
+            })
+          );
+        })
+      );
+      observable.subscribe(this.subjects[sub_id]);
+    }
+    return this.subjects[sub_id];
   }
 }
