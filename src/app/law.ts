@@ -23,6 +23,7 @@ export interface LawContent {
     updates?: string[];
     oldNames?: string[];
     english?: LawContent;
+    history?: any;
 }
 
 export interface LawInfo {

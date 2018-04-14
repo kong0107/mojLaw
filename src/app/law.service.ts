@@ -28,7 +28,12 @@ export class LawService {
     if(!this.observables.all) {
       this.observables.all = this.get<LawInfo[]>("index.json").pipe(
         map(lawList => {
-          lawList.forEach(law => this.laws[law["PCode"]] = law);
+          window["laws"] = this.laws;
+          console.log("Getting index.json");
+          lawList.forEach(law => {
+            this.laws[law["PCode"]] = law;
+            if(law.updates) law.updates.reverse();
+          });
           return this.lawList = lawList.sort((a, b) => (+b.lastUpdate) - (+a.lastUpdate));
         })
       );
@@ -42,10 +47,17 @@ export class LawService {
         flatMap((lawList: LawInfo[]) => {
           return this.get<LawContent>(`FalVMingLing/${PCode}.json`).pipe(
             map(lawContent => {
+              console.log(`Getting ${PCode}`);
               lawContent.PCode = PCode;
               this.laws[PCode].content = lawContent;
               if(this.laws[PCode].updates) lawContent.updates = this.laws[PCode].updates;
               if(this.laws[PCode].oldNames) lawContent.oldNames = this.laws[PCode].oldNames;
+
+              lawContent.history = {};
+              lawContent.history[lawContent["最新異動日期"]]
+              = lawContent.history.newest
+              = lawContent;
+
               return lawContent;
             })
           );
@@ -54,6 +66,7 @@ export class LawService {
           if(lawContent["是否英譯註記"] == "N") return of(lawContent);
           return this.get<LawContent>(`Eng_FalVMingLing/${PCode}.json`).pipe(
             map(engContent => {
+              console.log(`Getting english version of ${PCode}`);
               lawContent.english = engContent;
               return lawContent;
             })
@@ -62,5 +75,22 @@ export class LawService {
       );
     }
     return this.observables[PCode];
+  }
+
+  loadLawHistory(
+    PCode: string,
+    date: string
+  ): Observable<LawContent> {
+    return this.getLaw(PCode).pipe(
+      flatMap((lawContent: LawContent) => {
+        return this.get<LawContent>(`HisMingLing/${PCode}/${date}_001.json`).pipe(
+          map(oldVersion => {
+            console.log(`Getting old version of ${PCode} on date ${date}`);
+            lawContent.history[date] = oldVersion;
+            return lawContent;
+          })
+        );
+      })
+    );
   }
 }

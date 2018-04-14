@@ -38,7 +38,7 @@
     <section *ngIf="law.updates" class="clearfix">
         <div class="float-left"><strong>沿革</strong></div>
         <ul class="list-inline mb-0" style="margin-left: 2.5em">
-            <li *ngFor="let date of law.updates.reverse()" class="list-inline-item"><time>{{date}}</time></li>
+            <li *ngFor="let date of law.updates" class="list-inline-item"><time>{{date}}</time></li>
         </ul>
     </section>
 </article>

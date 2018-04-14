@@ -11,6 +11,7 @@ import { LawService } from '../law.service';
 })
 export class LawComponent implements OnInit {
   PCode: string = "";
+  version: string = "";
   lawContent: any = {};
   attributes: Array<string> = [];
   chapters: Array<any> = [];
@@ -25,6 +26,9 @@ export class LawComponent implements OnInit {
   ngOnInit() {
     const dir = (location.hostname == "localhost") ? "./assets" : "";
     this.PCode = this.route.snapshot.paramMap.get("PCode");
+    this.version = this.route.snapshot.paramMap.get("version");
+    console.log(this.version);
+
     this.lawService.getLaw(this.PCode).subscribe(data => {
       this.lawContent = data;
       this.titleService.setTitle(data["法規名稱"]);

@@ -12,14 +12,24 @@
 
         <dt class="col-sm-1">更新</dt>
         <dd class="col-sm-11">{{lawContent["最新異動日期"]}}</dd>
+    </dl>
 
+    <dl class="row small">
         <dt class="col-sm-1">沿革</dt>
         <dd class="col-sm-11">
+            <!--ul *ngIf="lawContent.updates" class="list-inline m-0">
+                <li class="list-inline-item" [class.badge]="!version" [class.badge-primary]="!version">
+                    <a routerLink="/laws/{{PCode}}" [class]="version ? '' : 'text-light'">{{lawContent["最新異動日期"]}}<small>（最新）</small></a>
+                </li>
+                <li *ngFor="let date of lawContent.updates" class="list-inline-item" routerLinkActive="badge badge-primary">
+                    <a [routerLink]="['/laws', PCode, date]" routerLinkActive="text-light">{{date}}</a>
+                </li>
+            </ul-->
             <details><pre class="m-0">{{lawContent["沿革內容"]}}</pre></details>
         </dd>
     </dl>
 
-    <dl *ngIf="lawContent['附件']" class="row">
+    <dl *ngIf="lawContent['附件']" class="row small">
         <dt class="col-sm-1">附件</dt>
         <dd class="col-sm-11">
             <details>
