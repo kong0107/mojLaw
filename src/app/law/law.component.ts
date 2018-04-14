@@ -27,7 +27,6 @@ export class LawComponent implements OnInit {
     const dir = (location.hostname == "localhost") ? "./assets" : "";
     this.PCode = this.route.snapshot.paramMap.get("PCode");
     this.version = this.route.snapshot.paramMap.get("version");
-    console.log(this.version);
 
     this.lawService.getLaw(this.PCode).subscribe(data => {
       this.lawContent = data;

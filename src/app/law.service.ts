@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 
-import { Observable } from 'rxjs/Observable';
+import { Observable, ReplaySubject } from 'rxjs/Rx';
 import { of } from 'rxjs/observable/of';
 import { map, flatMap } from 'rxjs/operators';
 
@@ -16,19 +16,22 @@ export class LawService {
 
   lawList = [];
   laws: any = {};
-  observables: any = {};
+  subjects: any = {};
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) {
+    window["laws"] = this.laws;
+  }
 
   get<T>(file): Observable<T> {
     return this.http.get<T>(this.assetsDir + file);
   }
 
   getAll(): Observable<LawInfo[]> {
-    if(!this.observables.all) {
-      this.observables.all = this.get<LawInfo[]>("index.json").pipe(
+    console.log("LawService.getAll");
+    if(!this.subjects.all) {
+      this.subjects.all = new ReplaySubject(1);
+      const observable = this.get<LawInfo[]>("index.json").pipe(
         map(lawList => {
-          window["laws"] = this.laws;
           console.log("Getting index.json");
           lawList.forEach(law => {
             this.laws[law["PCode"]] = law;
@@ -37,13 +40,15 @@ export class LawService {
           return this.lawList = lawList.sort((a, b) => (+b.lastUpdate) - (+a.lastUpdate));
         })
       );
+      observable.subscribe(this.subjects.all);
     }
-    return this.observables.all;
+    return this.subjects.all;
   }
 
   getLaw(PCode: string): Observable<LawContent> {
-    if(!this.observables[PCode]) {
-      this.observables[PCode] = this.getAll().pipe(
+    if(!this.subjects[PCode]) {
+      this.subjects[PCode] = new ReplaySubject(1);
+      const observable = this.getAll().pipe(
         flatMap((lawList: LawInfo[]) => {
           return this.get<LawContent>(`FalVMingLing/${PCode}.json`).pipe(
             map(lawContent => {
@@ -73,8 +78,9 @@ export class LawService {
           );
         })
       );
+      observable.subscribe(this.subjects[PCode]);
     }
-    return this.observables[PCode];
+    return this.subjects[PCode];
   }
 
   loadLawHistory(
