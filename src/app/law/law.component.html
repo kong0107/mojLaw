@@ -63,16 +63,19 @@
   <div class="d-lg-flex flex-row-reverse">
     <div class="col-lg-4">
         <ul class="list-unstyled">
-            <li *ngFor="let chapter of chapters; index as i" class="row" [class]="chapter.type">
-                <a [href]="'/laws/' + PCode + '#' +chapter.raw">{{chapter.raw}}</a>
+            <li *ngFor="let chapter of chapters" class="row" [class]="chapter.type">
+                <a [href]="'laws/' + PCode + '#' +chapter.raw">{{chapter.raw}}</a>
             </li>
         </ul>
-        <hr>
-        <app-law-division [divisions]="lawContent.chapters"></app-law-division>
+        <ng-container *ngIf="lawContent.chapters">
+            <hr>
+            （以下測試中）
+            <app-law-division [divisions]="lawContent.chapters"></app-law-division>
+        </ng-container>
     </div>
     <div class="col-lg-8">
         <p>{{lawContent["前言"]}}</p>
-        <ng-container *ngFor="let article of articles; index as i">
+        <ng-container *ngFor="let article of articles">
             <h3 *ngIf="article['編章節']" class="offset-2" [id]="article.structure.fragmentId">
                 <span [id]="article['編章節']">{{article['編章節']}}</span>
             </h3>
