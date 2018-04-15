@@ -65,7 +65,7 @@ export class LawService {
               return lawContent;
             })
           );
-        }),
+        })/*,
         flatMap((lawContent: LawContent) => {
           if(lawContent["是否英譯註記"] == "N") return of(lawContent);
           return this.get<LawContent>(`Eng_FalVMingLing/${PCode}.json`).pipe(
@@ -75,7 +75,7 @@ export class LawService {
               return lawContent;
             })
           );
-        })
+        })*/
       );
       observable.subscribe(this.subjects[PCode]);
     }

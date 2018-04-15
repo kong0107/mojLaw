@@ -35,8 +35,8 @@
         <dt class="col-sm-2">附件</dt>
         <dd class="col-sm-10">
             <ol class="list-inline">
-                <li *ngFor="let annex of lawContent['附件']; index as i" class="list-inline-item">
-                    <a href="{{annex}}">{{i}}</a>
+                <li *ngFor="let annex of lawContent['附件']; index as i" class="list-inline-item mx-1">
+                    <a href="{{annex}}" class="badge badge-light">{{i+1}}</a>
                 </li>
             </ol>
         </dd>
