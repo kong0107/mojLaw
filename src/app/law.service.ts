@@ -109,25 +109,28 @@ export class LawService {
   }
 
   parseDivisions(lawContent: LawContent) {
-    let divList = [], result: any = {};
+    let divList = [], result: any = {children: []};
     lawContent["法規內容"]
       .filter(article => article["編章節"])
       .forEach((article, index) => {
         const
-          raw = article["編章節"],
-          match = raw.split(/([編章節款目])/),
-          type = match[1],
+          raw = article["編章節"].trim(),
+          match = raw.match(/^第\s*[一二三四五六七八九十百千]+\s*[編章節款目](之[一二三四五六七八九十]+)?/),
+          ordinal = match[0].replace(/\s/g, ''),
+          title = raw.substr(match[0].length).replace(/\s/g, ''),
+          type = ordinal.match(/[編章節款目]/)[0],
           depth = "編章節款目".indexOf(type),
-          ordinal = match[0].replace(/\s/g, '') + match[1],
-          title = match.slice(2).join('').replace(/\s/g, ''),
-          item: any = {raw: raw, type: type, depth: depth, ordinal: ordinal, title: title}
+          deleted = (title == "（刪除）"),
+          item: any = {raw: raw, type: type, depth: depth, ordinal: ordinal, title: title, deleted: deleted}
         ;
         if(!index) {
           item.parent = result;
+          item.fragmentId = item.ordinal;
           result.children = [item];
         }
         else if(depth > divList[index - 1].depth) {
           item.parent = divList[index - 1];
+          item.fragmentId = item.parent.fragmentId + item.ordinal;
           divList[index - 1].children = [item];
         }
         else {
@@ -135,11 +138,13 @@ export class LawService {
           for(cursor = index - 1; cursor > 0; --cursor)
             if(divList[cursor].depth == depth) break;
           item.parent = divList[cursor].parent;
+          item.fragmentId = (item.parent.fragmentId || "") + item.ordinal;
           divList[cursor].parent.children.push(item);
         }
+        article.structure = item;
         divList.push(item);
       })
     ;
-    //console.log(lawContent.chapters = result.children);
+    lawContent.chapters = result.children;
   }
 }

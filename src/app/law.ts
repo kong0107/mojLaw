@@ -2,6 +2,7 @@ export interface Article {
     編章節?: string;
     條號?: string;
     條文內容?: string;
+    structure?: any;
 }
 
 export interface LawContent {

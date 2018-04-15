@@ -6,7 +6,7 @@ import { Component, OnInit, Input } from '@angular/core';
   styleUrls: ['./law-division.component.css']
 })
 export class LawDivisionComponent implements OnInit {
-  @Input() list: any;
+  @Input() divisions: any[];
   @Input() depth: number = 0;
 
   constructor() { }

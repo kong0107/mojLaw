@@ -67,12 +67,14 @@
                 <a [href]="'/laws/' + PCode + '#' +chapter.raw">{{chapter.raw}}</a>
             </li>
         </ul>
+        <hr>
+        <app-law-division [divisions]="lawContent.chapters"></app-law-division>
     </div>
     <div class="col-lg-8">
         <p>{{lawContent["前言"]}}</p>
         <ng-container *ngFor="let article of articles; index as i">
-            <h3 *ngIf="article['編章節']" class="offset-2" [id]="article['編章節']">
-                {{article['編章節']}}
+            <h3 *ngIf="article['編章節']" class="offset-2" [id]="article.structure.fragmentId">
+                <span [id]="article['編章節']">{{article['編章節']}}</span>
             </h3>
             <dl *ngIf="!article['編章節']" class="row m-0">
                 <dt class="col-md-2 px-0" [id]="article['條號']">{{article['條號']}}</dt>

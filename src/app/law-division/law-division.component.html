@@ -1,7 +1,24 @@
-<ul class="list-unstyled ml-4">
-    <li *ngFor="let item of list">
-        [{{depth}}] a: {{item.a}}, b: {{item.b}}
-        <app-law-division *ngIf="item.x" [list]="item.x" [depth]="depth+1"></app-law-division>
+<ul class="list-unstyled ml-3">
+    <li *ngFor="let div of divisions" [class.text-muted]="div.deleted">
+        <a routerLink="." [fragment]="div.fragmentId">
+            <span>{{div.ordinal}}</span>
+            <span [class.font-weight-bold]="!div.deleted">{{div.title}}</span>
+        </a>
+        <app-law-division *ngIf="div.children" [divisions]="div.children" [depth]="depth+1"></app-law-division>
     </li>
 </ul>
-<p>law-division works!</p>
+<!--table>
+    <tbody>
+        <ng-container *ngFor="let div of divisions">
+            <tr>
+                <th class="text-left">{{div.ordinal}}</th>
+                <td class="text-left pl-2">{{div.title}}</td>
+            </tr>
+            <tr *ngIf="div.children">
+                <td colspan="2" style="padding-left: 1em">
+                    <app-law-division [divisions]="div.children" [depth]="depth+1"></app-law-division>
+                </td>
+            </tr>
+        </ng-container>
+    </tbody>
+</table-->
