@@ -65,7 +65,8 @@ export class LawService {
               return lawContent;
             })
           );
-        })/*,
+        }),
+        tap(this.parseDivisions)/*,
         flatMap((lawContent: LawContent) => {
           if(lawContent["是否英譯註記"] == "N") return of(lawContent);
           return this.get<LawContent>(`Eng_FalVMingLing/${PCode}.json`).pipe(
@@ -105,5 +106,40 @@ export class LawService {
       observable.subscribe(this.subjects[sub_id]);
     }
     return this.subjects[sub_id];
+  }
+
+  parseDivisions(lawContent: LawContent) {
+    let divList = [], result: any = {};
+    lawContent["法規內容"]
+      .filter(article => article["編章節"])
+      .forEach((article, index) => {
+        const
+          raw = article["編章節"],
+          match = raw.split(/([編章節款目])/),
+          type = match[1],
+          depth = "編章節款目".indexOf(type),
+          ordinal = match[0].replace(/\s/g, '') + match[1],
+          title = match.slice(2).join('').replace(/\s/g, ''),
+          item: any = {raw: raw, type: type, depth: depth, ordinal: ordinal, title: title}
+        ;
+        if(!index) {
+          item.parent = result;
+          result.children = [item];
+        }
+        else if(depth > divList[index - 1].depth) {
+          item.parent = divList[index - 1];
+          divList[index - 1].children = [item];
+        }
+        else {
+          let cursor;
+          for(cursor = index - 1; cursor > 0; --cursor)
+            if(divList[cursor].depth == depth) break;
+          item.parent = divList[cursor].parent;
+          divList[cursor].parent.children.push(item);
+        }
+        divList.push(item);
+      })
+    ;
+    //console.log(lawContent.chapters = result.children);
   }
 }

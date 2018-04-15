@@ -13,6 +13,7 @@ import { LawDetailComponent } from './law-detail/law-detail.component';
 import { LawService } from './law.service';
 import { LoadingComponent } from './loading/loading.component';
 import { HeaderComponent } from './header/header.component';
+import { LawDivisionComponent } from './law-division/law-division.component';
 
 
 @NgModule({
@@ -23,7 +24,8 @@ import { HeaderComponent } from './header/header.component';
     LawArticlesComponent,
     LawDetailComponent,
     LoadingComponent,
-    HeaderComponent
+    HeaderComponent,
+    LawDivisionComponent
   ],
   imports: [
     BrowserModule,

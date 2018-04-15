@@ -1,45 +1,44 @@
 <header>
   <h1 style="font-size: 20px">
     {{lawContent["法規名稱"]}}
-    <p class="small">{{lawContent["英文法規名稱"]}}</p>
+    <a href="http://law.moj.gov.tw/LawClass/LawAll.aspx?PCode={{PCode}}"><img src="/assets/external.svg"></a>
+    <p class="small">
+      <a href="http://law.moj.gov.tw/Eng/LawClass/LawContent.aspx?PCODE={{PCode}}">{{lawContent["英文法規名稱"]}}</a>
+    </p>
   </h1>
   <section id="metadata">
-    <dl class="row">
+    <dl class="row mb-0">
         <dt class="col-sm-2">性質</dt>
         <dd class="col-sm-10">{{lawContent["法規性質"]}}</dd>
 
         <dt class="col-sm-2">類別</dt>
         <dd class="col-sm-10">{{lawContent["法規類別"]}}</dd>
-    </dl>
 
-    <dl class="row">
         <dt class="col-sm-2">沿革</dt>
         <dd class="col-sm-10">
             <ul *ngIf="lawContent.updates" class="list-inline m-0">
-                <li class="list-inline-item">
+                <li class="list-inline-item px-2">
                     <a routerLink="/laws/{{PCode}}"
                         [class]="(!date || date == lawContent['最新異動日期']) ? 'badge badge-primary' : ''"
                     >{{lawContent["最新異動日期"]}}<small>（最新）</small></a>
                 </li>
-                <li *ngFor="let date of lawContent.updates"
-                    class="list-inline-item px-2"
-                >
+                <li *ngFor="let date of lawContent.updates" class="list-inline-item px-2">
                     <a [routerLink]="['/laws', PCode, date]" routerLinkActive="badge badge-primary">{{date}}</a>
                 </li>
             </ul>
             <details><pre class="m-0">{{lawContent["沿革內容"]}}</pre></details>
         </dd>
-    </dl>
 
-    <dl *ngIf="lawContent['附件']" class="row">
-        <dt class="col-sm-2">附件</dt>
-        <dd class="col-sm-10">
-            <ol class="list-inline">
-                <li *ngFor="let annex of lawContent['附件']; index as i" class="list-inline-item mx-1">
-                    <a href="{{annex}}" class="badge badge-light">{{i+1}}</a>
-                </li>
-            </ol>
-        </dd>
+        <ng-container *ngIf="lawContent['附件']">
+            <dt class="col-sm-2">附件</dt>
+            <dd class="col-sm-10">
+                <ol class="list-inline">
+                    <li *ngFor="let annex of lawContent['附件']; index as i" class="list-inline-item mx-1">
+                        <a href="{{annex}}" class="badge badge-light">{{i+1}}</a>
+                    </li>
+                </ol>
+            </dd>
+        </ng-container>
     </dl>
   </section>
 </header>

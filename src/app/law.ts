@@ -24,6 +24,7 @@ export interface LawContent {
     oldNames?: string[];
     english?: LawContent;
     history?: any;
+    chapters?: any[];
 }
 
 export interface LawInfo {

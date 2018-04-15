@@ -1,0 +1,7 @@
+<ul class="list-unstyled ml-4">
+    <li *ngFor="let item of list">
+        [{{depth}}] a: {{item.a}}, b: {{item.b}}
+        <app-law-division *ngIf="item.x" [list]="item.x" [depth]="depth+1"></app-law-division>
+    </li>
+</ul>
+<p>law-division works!</p>
