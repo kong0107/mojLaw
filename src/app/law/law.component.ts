@@ -11,7 +11,7 @@ import { LawService } from '../law.service';
 })
 export class LawComponent implements OnInit {
   PCode: string = "";
-  version: string = "";
+  date: string = "";
   lawContent: any = {};
   attributes: Array<string> = [];
   chapters: Array<any> = [];
@@ -24,26 +24,27 @@ export class LawComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    const dir = (location.hostname == "localhost") ? "./assets" : "";
-    this.PCode = this.route.snapshot.paramMap.get("PCode");
-    this.version = this.route.snapshot.paramMap.get("version");
-
-    this.lawService.getLaw(this.PCode).subscribe(data => {
-      this.lawContent = data;
-      this.titleService.setTitle(data["法規名稱"]);
-      for(let attr in data) this.attributes.push(attr);
-
-      this.articles = data["法規內容"].map(article => {
-        if(article["編章節"]) {
+    this.route.paramMap.switchMap(params => {
+      this.PCode = params.get("PCode");
+      this.date = params.get("date");
+      return this.lawService.loadLawHistory(this.PCode, this.date);
+    }).subscribe(lawContent => {
+      this.lawContent = lawContent;
+      const version = lawContent.history[this.date || "newest"];
+      this.titleService.setTitle(version["法規名稱"]);
+      this.articles = version["法規內容"];
+      this.chapters = this.articles
+        .filter(article => article["編章節"])
+        .map(article => {
           const raw = article["編章節"];
-          const elem: any = {raw: raw};
-
-          elem.type = raw.match(/[編章節款目]/)[0];
-          elem.depth = "編章節款目".indexOf(elem.type);
-          this.chapters.push(elem);
-        }
-        return article;
-      });
+          const type = raw.match(/[編章節款目]/)[0];
+          return {
+            raw: raw,
+            type: type,
+            depth: "編章節款目".indexOf(type)
+          };
+        })
+      ;
     });
   }
 }

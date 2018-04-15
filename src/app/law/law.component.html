@@ -10,20 +10,21 @@
 
         <dt class="col-sm-2">類別</dt>
         <dd class="col-sm-10">{{lawContent["法規類別"]}}</dd>
-
-        <dt class="col-sm-2">更新</dt>
-        <dd class="col-sm-10">{{lawContent["最新異動日期"]}}</dd>
     </dl>
 
     <dl class="row">
         <dt class="col-sm-2">沿革</dt>
         <dd class="col-sm-10">
             <ul *ngIf="lawContent.updates" class="list-inline m-0">
-                <li class="list-inline-item" [class.badge]="!version" [class.badge-primary]="!version">
-                    <a routerLink="/laws/{{PCode}}" [class]="version ? '' : 'text-light'">{{lawContent["最新異動日期"]}}<small>（最新）</small></a>
+                <li class="list-inline-item">
+                    <a routerLink="/laws/{{PCode}}"
+                        [class]="(!date || date == lawContent['最新異動日期']) ? 'badge badge-primary' : ''"
+                    >{{lawContent["最新異動日期"]}}<small>（最新）</small></a>
                 </li>
-                <li *ngFor="let date of lawContent.updates" class="list-inline-item px-2" routerLinkActive="badge badge-primary">
-                    <a [routerLink]="['/laws', PCode, date]" routerLinkActive="text-light">{{date}}</a>
+                <li *ngFor="let date of lawContent.updates"
+                    class="list-inline-item px-2"
+                >
+                    <a [routerLink]="['/laws', PCode, date]" routerLinkActive="badge badge-primary">{{date}}</a>
                 </li>
             </ul>
             <details><pre class="m-0">{{lawContent["沿革內容"]}}</pre></details>
@@ -55,7 +56,10 @@
 </nav-->
 
 <section>
-  <h2>法規內容</h2>
+  <h2>
+    法規內容
+    <small *ngIf="date && date!=lawContent['最新異動日期']">（非最新）</small>
+  </h2>
   <app-loading *ngIf="!articles.length"></app-loading>
   <div class="d-lg-flex flex-row-reverse">
     <div class="col-lg-4">

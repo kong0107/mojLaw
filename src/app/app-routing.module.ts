@@ -10,7 +10,7 @@ const routes: Routes = [
   { path: '', component: IndexComponent, pathMatch: 'full' },
   { path: 'search/:query', component: IndexComponent },
   { path: 'laws/:PCode', component: LawComponent, pathMatch: 'full' },
-  { path: 'laws/:PCode/:version', component: LawComponent },
+  { path: 'laws/:PCode/:date', component: LawComponent },
   { path: '**', redirectTo: '/' }
 ];
 

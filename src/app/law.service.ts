@@ -27,12 +27,11 @@ export class LawService {
   }
 
   getAll(): Observable<LawInfo[]> {
-    console.log("LawService.getAll");
     if(!this.subjects.all) {
       this.subjects.all = new ReplaySubject(1);
       const observable = this.get<LawInfo[]>("index.json").pipe(
         map(lawList => {
-          console.log("Getting index.json");
+          console.log("Loading index.json");
           lawList.forEach(law => {
             this.laws[law["PCode"]] = law;
             if(law.updates) law.updates.reverse();
@@ -52,7 +51,7 @@ export class LawService {
         flatMap((lawList: LawInfo[]) => {
           return this.get<LawContent>(`FalVMingLing/${PCode}.json`).pipe(
             map(lawContent => {
-              console.log(`Getting ${PCode}`);
+              console.log(`Loading ${PCode}`);
               lawContent.PCode = PCode;
               this.laws[PCode].content = lawContent;
               if(this.laws[PCode].updates) lawContent.updates = this.laws[PCode].updates;
@@ -71,7 +70,7 @@ export class LawService {
           if(lawContent["是否英譯註記"] == "N") return of(lawContent);
           return this.get<LawContent>(`Eng_FalVMingLing/${PCode}.json`).pipe(
             map(engContent => {
-              console.log(`Getting english version of ${PCode}`);
+              console.log(`Loading ${PCode}/eng`);
               lawContent.english = engContent;
               return lawContent;
             })
@@ -87,15 +86,18 @@ export class LawService {
     PCode: string,
     date: string
   ): Observable<LawContent> {
+    if(!date) return this.getLaw(PCode);
     const sub_id = `${PCode}_${date}`;
     if(!this.subjects[sub_id]) {
       this.subjects[sub_id] = new ReplaySubject(1);
       const observable = this.getLaw(PCode).pipe(
         flatMap((lawContent: LawContent) => {
+          if(date == lawContent["最新異動日期"]) return of(lawContent);
           return this.get<LawContent>(`HisMingLing/${PCode}/${date}_001.json`).pipe(
-            tap(oldVersion => {
-              console.log(`Getting old version of ${PCode} on date ${date}`);
+            map(oldVersion => {
+              console.log(`Loading ${PCode}/${date}`);
               lawContent.history[date] = oldVersion;
+              return lawContent;
             })
           );
         })
