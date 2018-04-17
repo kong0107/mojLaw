@@ -1,3 +1,9 @@
+.編 { padding-left: 0em }
+.章 { padding-left: 1em }
+.節 { padding-left: 2em }
+.款 { padding-left: 3em }
+.目 { padding-left: 4em }
+
 @media (min-width: 768px) {
   #metadata dt {
     text-align: right;
@@ -9,8 +15,12 @@
   }
 }
 
-.編 { padding-left: 0em }
-.章 { padding-left: 1em }
-.節 { padding-left: 2em }
-.款 { padding-left: 3em }
-.目 { padding-left: 4em }
+@media (min-width: 992px) {
+  #chapters {
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    overflow-y: auto;
+    z-index: 3;
+  }
+}

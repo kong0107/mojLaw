@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { Router, ActivatedRoute, NavigationEnd } from '@angular/router';
 import { Title } from '@angular/platform-browser';
 
 import { LawService } from '../law.service';
+import { LawContent } from '../law';
 
 @Component({
   selector: 'app-law',
@@ -17,11 +18,28 @@ export class LawComponent implements OnInit {
   chapters: Array<any> = [];
   articles: Array<any> = [];
 
+  scrollToFragment() {
+    const fragment = this.router.parseUrl(this.router.url).fragment;
+    if(fragment) {
+      const elem = document.getElementById(fragment);
+      if(elem) elem.scrollIntoView(true);
+    }
+  }
+
   constructor(
     private route: ActivatedRoute,
+    private router: Router,
     private titleService: Title,
     private lawService: LawService
-  ) { }
+  ) {
+    /**
+     * Workaround for router fragment issue of Angular
+     * https://github.com/angular/angular/issues/13636#issuecomment-304825738
+     */
+    router.events.subscribe(event => {
+      if (event instanceof NavigationEnd) this.scrollToFragment();
+    });
+  }
 
   ngOnInit() {
     this.route.paramMap.switchMap(params => {
@@ -45,6 +63,8 @@ export class LawComponent implements OnInit {
           };
         })
       ;
+      //setTimeout(this.scrollToFragment(), 1000); //不成功？
+      //window["lawComponent"] = this;
     });
   }
 }

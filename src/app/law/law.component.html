@@ -61,17 +61,8 @@
   </h2>
   <app-loading *ngIf="!articles.length"></app-loading>
   <div class="d-lg-flex flex-row-reverse">
-    <div class="col-lg-4">
-        <ul class="list-unstyled">
-            <li *ngFor="let chapter of chapters" class="row" [class]="chapter.type">
-                <a [href]="'laws/' + PCode + '#' +chapter.raw">{{chapter.raw}}</a>
-            </li>
-        </ul>
-        <ng-container *ngIf="lawContent.chapters">
-            <hr>
-            （以下測試中）
-            <app-law-division [divisions]="lawContent.chapters"></app-law-division>
-        </ng-container>
+    <div id="chapters" class="col-lg-4 border-left">
+        <app-law-division [divisions]="lawContent.chapters"></app-law-division>
     </div>
     <div class="col-lg-8">
         <p>{{lawContent["前言"]}}</p>

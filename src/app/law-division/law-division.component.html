@@ -1,4 +1,4 @@
-<ul class="list-unstyled ml-3">
+<ul *ngIf="divisions" class="list-unstyled ml-3">
     <li *ngFor="let div of divisions" [class.text-muted]="div.deleted">
         <a routerLink="." [fragment]="div.fragmentId">
             <span>{{div.ordinal}}</span>
