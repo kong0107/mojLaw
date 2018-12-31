@@ -1,0 +1,27 @@
+@import '~bootstrap/scss/bootstrap.scss';
+
+.App {
+    > {
+        header, footer {
+            @extend .text-light;
+            @extend .d-print-none;
+            > div {
+                @extend .container;
+                display: flex;
+                @extend .justify-content-between;
+            }
+        }
+
+        header {
+            @extend .bg-dark;
+            a {
+                @extend .text-success;
+            }
+        }
+
+        footer {
+            @extend .bg-secondary;
+            @extend .fixed-bottom;
+        }
+    }
+}
