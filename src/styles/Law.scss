@@ -1,0 +1,125 @@
+@import '~bootstrap/scss/bootstrap.scss';
+@import 'style.scss';
+
+.Law {
+  display: flex;
+}
+
+.Law-title {
+  position: sticky;
+  top: 0;
+}
+
+.DivisionList,
+.LawContent {
+  list-style-type: none;
+  margin-left: 0;
+
+  .division-title-container {
+    display: flex;
+
+    .division-title {
+      font-weight: bold;
+      padding-left: .75em;
+      white-space: nowrap;
+    }
+
+    .division-number {
+      white-space: nowrap;
+    }
+  }
+}
+
+.Law-divisions-container {
+  position: sticky;
+  top: $header-height;
+  height: calc(100vh - #{$header-height});
+  overflow-y: auto;
+  flex: 0 0 auto;
+  padding-right: .75em;
+
+  .DivisionList {
+    padding-left: 1.5em;
+  }
+
+  > .DivisionList {
+    padding-left: 0;
+  }
+}
+
+.Law-main {
+  padding-left: .5em;
+
+  > header {
+    position: sticky;
+    top: 0;
+    background-color: #fff;
+  }
+
+  .LawContent {
+    padding-left: 0;
+
+    .division-編 { font-size: 160%; }
+    .division-章 { font-size: 150%; }
+    .division-節 { font-size: 140%; }
+    .division-款 { font-size: 130%; }
+    .division-目 { font-size: 120%; }
+
+    .division-range {
+      padding-left: 1em;
+      font-size: small;
+      align-self: center;
+    }
+  }
+
+  .Article-content {
+    li {
+      @extend .text-monospace;
+      list-style-type: none;
+    }
+
+    .stratum-0 {
+      margin-left: 0;
+      padding-left: 3em;
+      > li:not(:only-of-type) {
+        list-style-type: upper-roman;
+      }
+    }
+
+    .stratum-1 {
+      padding-left: 4em;
+      li > p:first-of-type {
+        text-indent: -4em;
+      }
+    }
+
+    .stratum-2 {
+      padding-left: 2em;
+      li > p:first-of-type {
+        text-indent: -2em;
+      }
+    }
+
+    .stratum-3 {
+      padding-left: 3em;
+      li > p:first-of-type {
+        text-indent: -3em;
+      }
+    }
+
+    .stratum-4 {
+      padding-left: 1em;
+      li > p:first-of-type {
+        text-indent: -1em;
+      }
+    }
+
+    .stratum-5 {
+      padding-left: 2.5em;
+      li > p:first-of-type {
+        text-indent: -2.5em;
+      }
+    }
+  }
+}
+

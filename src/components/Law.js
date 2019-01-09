@@ -2,59 +2,55 @@ import React, {
   Component
 } from 'react';
 
+import DivisionList from './DivisionList';
+import LawContent from './LawContent';
+
+import config from '../js/config';
 import {
   fetch,
   log
 } from '../js/utility';
 
-import './Law.scss';
+import '../styles/Law.scss';
 
 class Law extends Component {
   constructor(props) {
     super(props);
     this.state = {
       lawInfo: {
-        '法規內容': []
+        divisions: [],
+        articles: []
       }
     };
   }
 
   componentDidMount() {
-    fetch(`http://localhost/kong0107/mojLawSplitJSON/FalVMingLing/${this.props.match.params.pcode}.json`)
+    fetch(`${config.cdn}/FalVMingLing/${this.props.match.params.pcode}.json`)
     .then(res => res.json())
     .then(lawInfo => this.setState({lawInfo}))
     .catch(log);
   }
 
   render() {
-    const divisions = [];
-    const lawContentItems = [];
-    this.state.lawInfo['法規內容'].forEach(item => {
-      if(item['編章節']) {
-        divisions.push(
-          <div key={item['編章節']}>
-            <a href={`#${item['編章節']}`}>{item['編章節']}</a>
-          </div>
-        );
-        lawContentItems.push(
-          <h3 key={item['編章節']} id={item['編章節']}>{item['編章節']}</h3>
-        );
-        return;
-      }
-      lawContentItems.push(
-        <dl key={item['條號']}>
-          <dt>{item['條號']}</dt>
-          <dd>{item['條文內容']}</dd>
-        </dl>
-      );
-    });
+    const law = this.state.lawInfo;
+
+    const dl = [];
+    if(law.preamble) dl.push(
+      <dl key="preamble">
+        <dt>前言</dt>
+        <dd>{law.preamble}</dd>
+      </dl>
+    );
 
     return (
-      <div>
-        <h2>{this.state.lawInfo['法規名稱']}</h2>
-        <div className="Law-content">
-          <div className="Law-divisions">{divisions}</div>
-          <div className="Law-articles">{lawContentItems}</div>
+      <div className="Law">
+        <div className="Law-divisions-container"><DivisionList divisions={law.divisions} /></div>
+        <div className="Law-main">
+          <header>
+            <h2 className="Law-title">{law.title}</h2>
+          </header>
+          {dl}
+          <LawContent divisions={law.divisions} articles={law.articles} />
         </div>
       </div>
     );

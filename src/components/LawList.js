@@ -12,6 +12,8 @@ import {
   PaginationLink
 } from 'reactstrap';
 
+import config from '../js/config';
+
 class LawList extends Component {
   constructor(props) {
     super(props);
@@ -22,7 +24,7 @@ class LawList extends Component {
   }
 
   componentDidMount() {
-    fetch('http://localhost/kong0107/mojLawSplitJSON/index.json')
+    fetch(`${config.cdn}/index.json`)
     .then(res => res.json())
     .then(laws => this.setState({laws}));
   }

@@ -16,7 +16,12 @@ import {
 import LawList from './LawList';
 import Law from './Law';
 
-import './App.scss';
+import {
+  fetch,
+  log
+} from '../js/utility';
+import config from '../js/config';
+import '../styles/App.scss';
 
 class App extends Component {
   render() {
@@ -48,6 +53,13 @@ class Header extends Component {
     };
   }
 
+  componentDidMount() {
+    fetch(`${config.cdn}/UpdateDate.txt`)
+    .then(res => res.text())
+    .then(UpdateDate => this.setState({UpdateDate}))
+    .catch(log);
+  }
+
   toggle() {
     this.setState({
       tooltipOpen: !this.state.tooltipOpen
@@ -61,7 +73,7 @@ class Header extends Component {
           <Link className="title" to="/">法規查詢</Link>
           <div id="UpdateDateContainer">
             更新日期：
-            <time id="UpdateDate"></time>
+            <time id="UpdateDate">{this.state.UpdateDate}</time>
             <Tooltip target="UpdateDateContainer" placement="bottom-end" isOpen={this.state.tooltipOpen} toggle={this.toggle}>
               依照「全國法規資料庫」的「法規整編資料截止日」。<br />詳閱「資料來源」連結。
             </Tooltip>

@@ -1,4 +1,5 @@
 @import '~bootstrap/scss/bootstrap.scss';
+@import 'style.scss';
 
 .App {
     > {
@@ -14,14 +15,20 @@
 
         header {
             @extend .bg-dark;
+            height: $header-height;
             a {
                 @extend .text-success;
             }
         }
 
+        div {
+            padding-bottom: 2rem;
+            min-height: #{$main-height};
+        }
+
         footer {
             @extend .bg-secondary;
-            @extend .fixed-bottom;
+            height: $footer-height;
         }
     }
 }
