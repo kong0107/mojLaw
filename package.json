@@ -1,7 +1,7 @@
 {
   "name": "mojlaw",
-  "version": "0.2.0",
-  "private": true,
+  "version": "0.2.2",
+  "homepage": "https://kong0107.github.io/mojLaw",
   "dependencies": {
     "bootstrap": "^4.2.1",
     "node-sass": "^4.11.0",
@@ -12,10 +12,13 @@
     "reactstrap": "^6.5.0"
   },
   "scripts": {
+    "prepare": "git submodule update",
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "postbuild": "cp build/index.html build/404.html",
+    "deploy": "gh-pages -d build"
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -25,5 +28,8 @@
     "not dead",
     "not ie <= 11",
     "not op_mini all"
-  ]
+  ],
+  "devDependencies": {
+    "gh-pages": "^2.0.1"
+  }
 }

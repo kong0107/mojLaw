@@ -44,7 +44,11 @@ class Law extends Component {
 
     return (
       <div className="Law">
-        <div className="Law-divisions-container"><DivisionList divisions={law.divisions} /></div>
+        {
+          law.divisions.length
+          ? <div className="Law-divisions-container"><DivisionList divisions={law.divisions} /></div>
+          : null
+        }
         <div className="Law-main">
           <header>
             <h2 className="Law-title">{law.title}</h2>

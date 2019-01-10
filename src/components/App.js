@@ -9,10 +9,6 @@ import {
   Link
 } from "react-router-dom";
 
-import {
-  Tooltip
-} from 'reactstrap';
-
 import LawList from './LawList';
 import Law from './Law';
 
@@ -26,7 +22,7 @@ import '../styles/App.scss';
 class App extends Component {
   render() {
     return (
-      <Router>
+      <Router basename={config.basename}>
         <div className="App">
           <Header />
           <div>
@@ -47,10 +43,7 @@ class App extends Component {
 class Header extends Component {
   constructor(props) {
     super(props);
-    this.toggle = this.toggle.bind(this);
-    this.state = {
-      tooltipOpen: false
-    };
+    this.state = {};
   }
 
   componentDidMount() {
@@ -60,24 +53,21 @@ class Header extends Component {
     .catch(log);
   }
 
-  toggle() {
-    this.setState({
-      tooltipOpen: !this.state.tooltipOpen
-    });
-  }
-
   render() {
+    const updateDateContainer = this.state.UpdateDate
+    ? (
+      <div id="updateDateContainer">
+        更新日期：
+        <time>{this.state.UpdateDate}</time>
+      </div>
+    )
+    : null;
+
     return (
       <header>
         <div>
           <Link className="title" to="/">法規查詢</Link>
-          <div id="UpdateDateContainer">
-            更新日期：
-            <time id="UpdateDate">{this.state.UpdateDate}</time>
-            <Tooltip target="UpdateDateContainer" placement="bottom-end" isOpen={this.state.tooltipOpen} toggle={this.toggle}>
-              依照「全國法規資料庫」的「法規整編資料截止日」。<br />詳閱「資料來源」連結。
-            </Tooltip>
-          </div>
+          {updateDateContainer}
         </div>
       </header>
     );
@@ -88,8 +78,11 @@ class Footer extends Component {
   render() {
     return (
       <footer>
-        <div className="container">
-          FOOTER
+        <div>
+          <ul>
+            <li><a href="https://data.gov.tw/dataset/18289" title="政府資料開放平台">資料來源</a></li>
+            <li><a href="https://github.com/kong0107/mojLawSplit">資料處理</a></li>
+          </ul>
         </div>
       </footer>
     );
