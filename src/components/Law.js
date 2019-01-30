@@ -7,8 +7,8 @@ import LawContent from './LawContent';
 
 import config from '../js/config';
 import {
-  fetch,
-  log
+  fetch2,
+  errorHandler
 } from '../js/utility';
 
 import '../styles/Law.scss';
@@ -25,10 +25,10 @@ class Law extends Component {
   }
 
   componentDidMount() {
-    fetch(`${config.cdn}/FalVMingLing/${this.props.match.params.pcode}.json`)
+    fetch2(`${config.cdn}/FalVMingLing/${this.props.match.params.pcode}.json`)
     .then(res => res.json())
     .then(lawInfo => this.setState({lawInfo}))
-    .catch(log);
+    .catch(errorHandler);
   }
 
   render() {

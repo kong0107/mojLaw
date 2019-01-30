@@ -1,0 +1,53 @@
+@import '~bootstrap/scss/bootstrap.scss';
+@import 'variables.scss';
+
+.Catalog-searchContainer {
+  display: flex;
+  align-items: center;
+  margin-bottom: .5em;
+  position: sticky;
+  top: 0;
+  background-color: $background-color;
+  border-bottom: 1px solid #aaa;
+}
+
+.Catalog-searchInput {
+  flex: auto;
+  background-color: transparent;
+  margin-left: .5em;
+  border: none;
+}
+
+.Catalog-list {
+  margin: 0;
+  padding: 0;
+  li {
+    list-style-type: none;
+    border-left: 2px solid #aaa;
+    margin-bottom: .5em;
+    padding-bottom: .25em;
+    padding-left: .75em;
+  }
+}
+
+.CatalogItem:hover {
+  background-color: #fff;
+}
+
+.CatalogItem-link:hover {
+  text-decoration: none;
+}
+
+.CatalogItem-lastUpdate {
+  font-size: small;
+  @extend .text-muted;
+}
+
+.CatalogItem-name {
+  font-size: large;
+  font-weight: bold;
+}
+
+.CatalogItem-english {
+  font-size: small;
+}

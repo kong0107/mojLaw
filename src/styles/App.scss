@@ -1,65 +1,13 @@
 @import '~bootstrap/scss/bootstrap.scss';
-@import 'variables.scss';
+@import './variables.scss';
 
-ul:last-child,
-li:last-child {
-  margin-bottom: 0;
+#root {
+  background-color: #222;
 }
 
 .App {
-  > {
-    header, footer {
-      @extend .text-light;
-      @extend .d-print-none;
-      > div {
-        @extend .container;
-      }
-    }
-
-    header {
-      @extend .bg-dark;
-      height: $header-height;
-
-      a {
-        @extend .text-success;
-        font-size: large;
-        font-weight: bold;
-      }
-
-      > div {
-        display: flex;
-        justify-content: space-between;
-        align-items: flex-end;
-      }
-
-      #updateDateContainer {
-        font-size: small;
-      }
-    }
-
-    footer {
-      @extend .bg-secondary;
-      height: $footer-height;
-
-      a {
-        @extend .text-warning;
-      }
-
-      ul {
-        text-align: right;
-        list-style-type: none;
-        padding: 0.5em 0;
-        margin: 0;
-
-        li {
-          padding: 0 .5em;
-          display: inline-block;
-        }
-      }
-    }
-  }
-
-  main {
-    min-height: #{$main-height};
-  }
+  @extend .container;
+  padding-bottom: 1.5rem;
+  background-color: $background-color;
+  min-height: 100vh
 }
