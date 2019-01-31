@@ -14,8 +14,9 @@ export default class SearchBox extends PureComponent {
         <i className="fas fa-search" />
         <input className="SearchBox-input"
           type="text"
+          value={this.props.value}
           placeholder={this.props.placeholder}
-          onInput={event => this.props.onInput(event.target.value)}
+          onChange={event => this.props.onChange(event.target.value)}
         />
       </div>
     );

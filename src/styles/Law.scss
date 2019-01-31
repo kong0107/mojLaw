@@ -5,6 +5,15 @@
   position: sticky;
   top: 0;
   background-color: $background-color;
+  display: flex;
+  flex-direction: row-reverse;
+  justify-content: space-between;
+  z-index: 2;
+}
+
+.Home-link {
+  font-size: small;
+  flex: none;
 }
 
 .Law-title {
@@ -15,6 +24,8 @@
 .Law-tabContent > header {
   position: sticky;
   top: 2rem;
+  background-color: $background-color;
+  z-index: 2;
 }
 
 .Law-articlesAmount {
@@ -60,4 +71,38 @@
   p {
     margin-bottom: .3em;
   }
+}
+
+ol.DivisionList {
+  margin: 0;
+  padding: 0;
+  list-style-type: none;
+  margin-left: 2em;
+
+  li {
+    margin-bottom: .3em;
+  }
+}
+
+.DivisionItem {
+  display: flex;
+}
+
+.DivisionItem:hover {
+  background-color: #eee;
+}
+
+.DivisionItem-number {
+  flex: none;
+}
+
+.DivisionItem-title {
+  display: inline-block;
+  font-weight: bold;
+  margin: 0 .5em;
+}
+
+.DivisionItem-range {
+  display: inline-block;
+  font-size: small;
 }

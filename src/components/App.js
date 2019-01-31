@@ -17,12 +17,18 @@ import '../styles/App.scss';
 class App extends PureComponent {
   render() {return (
     <div className="App">
-      <Router basename={config.basename}>
-        <Switch>
-          <Route path="/" exact component={Catalog} />
-          <Route path="/laws/:pcode" component={Law} />
-        </Switch>
-      </Router>
+      <div id="main">
+        <Router basename={config.basename}>
+          <Switch>
+            <Route path="/" exact component={Catalog} />
+            <Route path="/laws/:pcode" component={Law} />
+          </Switch>
+        </Router>
+      </div>
+      <footer>
+        <a href="https://github.com/kong0107/mojLaw">網站原始碼</a>
+        <a href="https://github.com/kong0107/mojLawSplitJSON/tree/arranged">資料來源</a>
+      </footer>
     </div>
   );
   }

@@ -44,7 +44,7 @@ export default class Catalog extends PureComponent {
         <header>
           <SearchBox
             placeholder="法規搜尋"
-            onInput={text => this.setState({
+            onChange={text => this.setState({
               query: text,
               renderAmount: showBasicSize
             })}

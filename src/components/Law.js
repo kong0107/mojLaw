@@ -4,6 +4,7 @@ import React, {
 import {
   Route,
   Switch,
+  Link,
   NavLink
 } from 'react-router-dom';
 
@@ -13,7 +14,8 @@ import {
   errorHandler,
   fetch2,
   createFilterFunction,
-  numf
+  numf,
+  numf_reverse
 } from '../js/utility';
 import lawtext2obj from '../js/lawtext2obj';
 
@@ -43,29 +45,31 @@ export default class Law extends PureComponent {
     return (
       <div className="Law">
         <header>
+          <Link className="Home-link" to="/">法規搜尋</Link>
           <div className="Law-title">{law.title}</div>
-          <ul className="nav nav-tabs">
-            <li className="nav-item">
-              <NavLink className="nav-link"
-                to={match.url} exact
-              >條文</NavLink>
-            </li>
-            <li className={law.divisions.length ? 'nav-item' : 'd-none'}>
-              <NavLink className="nav-link"
-                to={`${match.url}/divisions`}
-              >編章節</NavLink>
-            </li>
-            <li className="nav-item">
-              <NavLink className="nav-link"
-                to={`${match.url}/history`}
-              >沿革</NavLink>
-            </li>
-          </ul>
         </header>
+        <ul className="nav nav-tabs">
+          <li className="nav-item">
+            <NavLink className="nav-link"
+              to={match.url} exact
+              onClick={() => console.log('a')}
+            >條文</NavLink>
+          </li>
+          <li className={law.divisions.length ? 'nav-item' : 'd-none'}>
+            <NavLink className="nav-link"
+              to={`${match.url}/divisions`}
+            >編章節</NavLink>
+          </li>
+          <li className="nav-item">
+            <NavLink className="nav-link"
+              to={`${match.url}/history`}
+            >沿革</NavLink>
+          </li>
+        </ul>
         <Switch>
           <Route path={match.path} exact render={() => <ArticlesTab law={law} />} />
           <Route path={`${match.path}/divisions`} render={() => <DivisionsTab divisions={law.divisions} />} />
-          <Route path={`${match.path}/history`} children={() => <History {...this.props} />} />
+          <Route path={`${match.path}/history`} children={() => <History />} />
         </Switch>
       </div>
     );
@@ -76,20 +80,42 @@ class ArticlesTab extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
-      query: ''
+      query: (new URL(document.location)).searchParams.get('query') || ''
     };
   }
 
   render() {
-    const testFunc = createFilterFunction(this.state.query);
-    const showing = this.props.law.articles.filter(a => testFunc(a.content));
+    const query = this.state.query;
+    const {articles} = this.props.law;
+
+    let showing = [];
+    if(/^[\s\-\d.~,]+$/.test(query)) {
+      // 列出條號的情形，要把字串拆回數字再比對
+      query.replace(/\s+/g, '').split(',').forEach(numOrRange => {
+        const endpoints = numOrRange.split('~');
+        if(endpoints.length === 1) {
+          const target = articles.find(a => a.number === numf_reverse(numOrRange));
+          if(target) showing.push(target);
+        }
+        else {
+          const [start, end] = endpoints.map(numf_reverse);
+          showing.push(...articles.filter(a => a.number >= start && a.number <= end));
+        }
+        showing.sort((a, b) => a.number - b.number);
+      });
+    }
+    else {
+      const testFunc = createFilterFunction(query);
+      showing = this.props.law.articles.filter(a => testFunc(a.content));
+    }
 
     return (
       <div className="Law-tabContent">
         <header>
           <SearchBox
             placeholder="法條搜尋"
-            onInput={text => this.setState({
+            value={query}
+            onChange={text => this.setState({
               query: text
             })}
           />
@@ -135,6 +161,7 @@ class ParaList extends PureComponent {
         const match = text.match(/^[第（()]?[\d一二三四五六七八九十]+(類：|[)）、.])?\s*/);
         if(match) {
           ordinal = match[0].trim();
+          if(/^[一二三四五六七八九十]+$/.test(ordinal)) ordinal += '　'; // for 憲法§108
           text = text.substring(match[0].length);
         }
       }
@@ -157,9 +184,23 @@ class ParaList extends PureComponent {
 
 class DivisionsTab extends PureComponent {
   render() {
-    return (
-      <span>divisions</span>
-    );
+    const children = this.props.divisions.map(div => {
+      return (
+        <li key={div.type + div.start}>
+          <Link className="DivisionItem"
+            to={`./?query=${numf(div.start)}~${numf(div.end)}`}
+          >
+            <span className="DivisionItem-number">第 {numf(div.number)} {div.type}</span>
+            <div className="DivisionItem-contentContainer">
+              <span className="DivisionItem-title">{div.title}</span>
+              <span className="DivisionItem-range">§§{numf(div.start)}～{numf(div.end)}</span>
+            </div>
+          </Link>
+          {div.children && <DivisionsTab divisions={div.children} />}
+        </li>
+      );
+    });
+    return <ol className="DivisionList">{children}</ol>;
   }
 }
 

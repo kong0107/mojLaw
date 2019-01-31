@@ -31,6 +31,13 @@ export const numf = number => {
   return p2 ? p1.concat('-', p2) : p1;
 };
 
+export const numf_reverse = text => {
+  const frags = text.split(/[-.]/);
+  let result = parseInt(frags[0]) * 100;
+  if(frags[1]) result += parseInt(frags[1]);
+  return result;
+}
+
 /**
  * @see {@link https://stackoverflow.com/questions/9083037/#answer-32851198 }
  * @see {@link http://blog.stevenlevithan.com/archives/javascript-roman-numeral-converter#comment-16107 }

@@ -1,5 +1,6 @@
 @import '~bootstrap/scss/bootstrap.scss';
 @import './variables.scss';
+$footer-height: 2em;
 
 #root {
   background-color: #222;
@@ -7,7 +8,21 @@
 
 .App {
   @extend .container;
-  padding-bottom: 1.5rem;
   background-color: $background-color;
-  min-height: 100vh
+}
+
+#main {
+  min-height: calc(100vh - #{$footer-height});
+}
+
+.App > footer {
+  border-top: 1px dashed #888;
+  text-align: right;
+  display: flex;
+  flex-direction: row-reverse;
+  height: $footer-height;
+
+  a {
+    margin: auto 1em;
+  }
 }

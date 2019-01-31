@@ -1,6 +1,6 @@
 {
-  "short_name": "法規查詢",
-  "name": "查詢全國法規資料庫的資料",
+  "short_name": "法規搜尋",
+  "name": "搜尋全國法規資料庫的資料",
   "icons": [
     {
       "src": "https://cdn.jsdelivr.net/gh/g0v/laweasyread-front/icon.png",
