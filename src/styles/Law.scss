@@ -1,125 +1,63 @@
 @import '~bootstrap/scss/bootstrap.scss';
 @import 'variables.scss';
 
-.Law {
-  display: flex;
+.Law > header {
+  position: sticky;
+  top: 0;
+  background-color: $background-color;
 }
 
 .Law-title {
-  position: sticky;
-  top: 0;
+  @extend .lead;
+  height: 2rem;
 }
 
-.DivisionList,
-.LawContent {
-  list-style-type: none;
-  margin-left: 0;
+.Law-tabContent > header {
+  position: sticky;
+  top: 2rem;
+}
 
-  .division-title-container {
+.Law-articlesAmount {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  font-size: small;
+  @extend .text-muted;
+}
+
+.Article-number {
+  position: sticky;
+}
+
+.Article-content {
+  ol {
+    margin: 0;
+    padding: 0;
+    list-style-type: none;
+  }
+
+  .ParaList-stratum0 {
+    padding-left: 2em;
+
+    > li:not(:only-child) {
+      list-style-type: upper-roman;
+    }
+
+    > li > dl > dt {
+      display: none;
+    }
+  }
+
+  dl {
     display: flex;
+    margin-bottom: .3em;
+  }
 
-    .division-title {
-      font-weight: bold;
-      padding-left: .75em;
-      white-space: nowrap;
-    }
+  dd {
+    margin-bottom: .3em;
+  }
 
-    .division-number {
-      white-space: nowrap;
-    }
+  p {
+    margin-bottom: .3em;
   }
 }
-
-.Law-divisions-container {
-  position: sticky;
-  top: $header-height;
-  height: calc(100vh - #{$header-height});
-  overflow-y: auto;
-  flex: 0 0 auto;
-  padding-right: .75em;
-
-  .DivisionList {
-    padding-left: 1.5em;
-  }
-
-  > .DivisionList {
-    padding-left: 0;
-  }
-}
-
-.Law-main {
-  padding-left: .5em;
-
-  > header {
-    position: sticky;
-    top: 0;
-    background-color: #fff;
-  }
-
-  .LawContent {
-    padding-left: 0;
-
-    .division-編 { font-size: 160%; }
-    .division-章 { font-size: 150%; }
-    .division-節 { font-size: 140%; }
-    .division-款 { font-size: 130%; }
-    .division-目 { font-size: 120%; }
-
-    .division-range {
-      padding-left: 1em;
-      font-size: small;
-      align-self: center;
-    }
-  }
-
-  .Article-content {
-    li {
-      @extend .text-monospace;
-      list-style-type: none;
-    }
-
-    .stratum-0 {
-      margin-left: 0;
-      padding-left: 3em;
-      > li:not(:only-of-type) {
-        list-style-type: upper-roman;
-      }
-    }
-
-    .stratum-1 {
-      padding-left: 4em;
-      li > p:first-of-type {
-        text-indent: -4em;
-      }
-    }
-
-    .stratum-2 {
-      padding-left: 2em;
-      li > p:first-of-type {
-        text-indent: -2em;
-      }
-    }
-
-    .stratum-3 {
-      padding-left: 3em;
-      li > p:first-of-type {
-        text-indent: -3em;
-      }
-    }
-
-    .stratum-4 {
-      padding-left: 1em;
-      li > p:first-of-type {
-        text-indent: -1em;
-      }
-    }
-
-    .stratum-5 {
-      padding-left: 2.5em;
-      li > p:first-of-type {
-        text-indent: -2.5em;
-      }
-    }
-  }
-}
-

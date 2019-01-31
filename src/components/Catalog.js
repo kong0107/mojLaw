@@ -1,16 +1,18 @@
 import React, {
   PureComponent
 } from 'react';
-
 import {
   Link
-} from "react-router-dom";
+} from 'react-router-dom';
 
+import SearchBox from './SearchBox';
 import config from '../js/config';
 import {
   fetch2,
+  errorHandler,
   createFilterFunction
 } from '../js/utility';
+
 import '../styles/Catalog.scss';
 
 const showBasicSize = 20;
@@ -30,6 +32,7 @@ export default class Catalog extends PureComponent {
     .then(catalog => this.setState(
       {catalog: catalog.sort((a, b) => b.lastUpdate - a.lastUpdate)}
     ))
+    .catch(errorHandler);
   }
 
   render() {
@@ -38,17 +41,18 @@ export default class Catalog extends PureComponent {
 
     return (
       <div className="Catalog">
-        <div className="Catalog-searchContainer">
-          <i className="fas fa-search" />
-          <input className="Catalog-searchInput"
-            type="text"
+        <header>
+          <SearchBox
             placeholder="法規搜尋"
-            onInput={event => this.setState({
-              query: event.target.value,
+            onInput={text => this.setState({
+              query: text,
               renderAmount: showBasicSize
             })}
           />
-        </div>
+          <span className="Catalog-amount">
+            {showing.length} 筆資料
+          </span>
+        </header>
         <ul className="Catalog-list">
           {showing.slice(0, this.state.renderAmount).map(law =>
             <CatalogItem key={law.pcode} law={law} />

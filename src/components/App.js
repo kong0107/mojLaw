@@ -6,7 +6,7 @@ import {
   BrowserRouter as Router,
   Route,
   Switch
-} from "react-router-dom";
+} from 'react-router-dom';
 
 import Catalog from './Catalog';
 import Law from './Law';
@@ -20,7 +20,7 @@ class App extends PureComponent {
       <Router basename={config.basename}>
         <Switch>
           <Route path="/" exact component={Catalog} />
-          <Route path="/laws/:id" component={Law} />
+          <Route path="/laws/:pcode" component={Law} />
         </Switch>
       </Router>
     </div>

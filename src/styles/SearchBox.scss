@@ -1,0 +1,15 @@
+@import '~bootstrap/scss/bootstrap.scss';
+@import 'variables.scss';
+
+.SearchBox {
+  display: flex;
+  align-items: center;
+}
+
+.SearchBox-input {
+  flex: auto;
+  background-color: transparent;
+  margin-left: .5em;
+  border: none;
+}
+

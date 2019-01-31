@@ -62,10 +62,12 @@ export const createFilterFunction = query => {
     if(frag.startsWith('-')) noList.push(frag.substring(1));
     else yesList.push(frag);
   });
-  return text => {
+  const result = text => {
     if(noList.some(frag => text.indexOf(frag) !== -1)) return false;
     if(!yesList.length) return true;
     return yesList.some(frag => text.indexOf(frag) !== -1);
   };
+  Object.assign(result, {yesList, noList});
+  return result;
 }
 

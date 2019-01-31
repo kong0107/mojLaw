@@ -1,9 +1,7 @@
 @import '~bootstrap/scss/bootstrap.scss';
 @import 'variables.scss';
 
-.Catalog-searchContainer {
-  display: flex;
-  align-items: center;
+.Catalog > header {
   margin-bottom: .5em;
   position: sticky;
   top: 0;
@@ -11,11 +9,12 @@
   border-bottom: 1px solid #aaa;
 }
 
-.Catalog-searchInput {
-  flex: auto;
-  background-color: transparent;
-  margin-left: .5em;
-  border: none;
+.Catalog-amount {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  font-size: small;
+  @extend .text-muted;
 }
 
 .Catalog-list {
