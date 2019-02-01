@@ -19,6 +19,10 @@
 .Law-title {
   @extend .lead;
   height: 2rem;
+
+  span {
+    margin-left: .5em;
+  }
 }
 
 .Law-tabContent > header {
@@ -36,8 +40,37 @@
   @extend .text-muted;
 }
 
+
+.DivisionHeader {
+  position: sticky;
+  top: 3.6rem;
+  z-index: 1;
+  background: #ccc;
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.DivisionHeader-part {
+  margin-right: 1em;
+}
+
+.DivisionHeader-partNumber {
+  font-size: small;
+}
+
+.DivisionHeader-partTitle {
+  font-size: large;
+  font-weight: bold;
+}
+
 .Article-number {
   position: sticky;
+  top: 3.6rem;
+  background-color: rgba($background-color, .75);
+
+  /**
+   * @see {@link http://nicolasgallagher.com/jump-links-and-viewport-positioning/demo/ }
+   */
 }
 
 .Article-content {
@@ -105,4 +138,9 @@ ol.DivisionList {
 .DivisionItem-range {
   display: inline-block;
   font-size: small;
+}
+
+.History > li {
+  white-space: pre-line;
+  margin-bottom: .75em;
 }

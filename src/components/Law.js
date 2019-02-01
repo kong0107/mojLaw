@@ -27,7 +27,9 @@ export default class Law extends PureComponent {
     this.state = {
       law:{
         articles: [],
-        divisions: []
+        divisions: [],
+        flatDivisions: [],
+        history: []
       }
     };
   }
@@ -35,24 +37,42 @@ export default class Law extends PureComponent {
   componentDidMount() {
     fetch2(`${config.cdn}/FalVMingLing/${this.props.match.params.pcode}.json`)
     .then(res => res.json())
-    .then(law => this.setState({law}))
+    .then(law => {
+      // 只留下編章節結構樹的葉子
+      const flatDivisions = law.divisions.slice();
+      for(let i = 0; i < flatDivisions.length;) {
+        const div = flatDivisions[i];
+        if(div.children) {
+          const ancestors = (div.ancestors || []).concat(div);
+          div.children.forEach(subDiv => subDiv.ancestors = ancestors);
+          flatDivisions.splice(i, 1, ...div.children);
+        }
+        else ++i;
+      }
+      law.flatDivisions = flatDivisions;
+      return this.setState({law});
+    })
     .catch(errorHandler);
   }
 
   render() {
     const { match } = this.props;
     const { law } = this.state;
+
     return (
       <div className="Law">
         <header>
           <Link className="Home-link" to="/">法規搜尋</Link>
-          <div className="Law-title">{law.title}</div>
+          <div className="Law-title">
+            {law.title || '讀取中'}
+            {law.isDiscarded && <span className="badge badge-danger">已廢止</span> }
+          </div>
         </header>
         <ul className="nav nav-tabs">
           <li className="nav-item">
             <NavLink className="nav-link"
               to={match.url} exact
-              onClick={() => console.log('a')}
+              onClick={() => window.location.reload()}
             >條文</NavLink>
           </li>
           <li className={law.divisions.length ? 'nav-item' : 'd-none'}>
@@ -68,8 +88,8 @@ export default class Law extends PureComponent {
         </ul>
         <Switch>
           <Route path={match.path} exact render={() => <ArticlesTab law={law} />} />
-          <Route path={`${match.path}/divisions`} render={() => <DivisionsTab divisions={law.divisions} />} />
-          <Route path={`${match.path}/history`} children={() => <History />} />
+          <Route path={`${match.path}/divisions`} render={() => <DivisionsTab {...this.props} divisions={law.divisions} />} />
+          <Route path={`${match.path}/history`} children={() => <History history={law.history} />} />
         </Switch>
       </div>
     );
@@ -80,13 +100,13 @@ class ArticlesTab extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
-      query: (new URL(document.location)).searchParams.get('query') || ''
+      query: (new URLSearchParams(window.location.search)).get('query') || ''
     };
   }
 
   render() {
     const query = this.state.query;
-    const {articles} = this.props.law;
+    const {articles, flatDivisions} = this.props.law;
 
     let showing = [];
     if(/^[\s\-\d.~,]+$/.test(query)) {
@@ -109,27 +129,58 @@ class ArticlesTab extends PureComponent {
       showing = this.props.law.articles.filter(a => testFunc(a.content));
     }
 
+    const sections = [];
+    flatDivisions.forEach(div => {
+      const articles = showing.filter(a => a.number >= div.start && a.number <= div.end);
+      if(!articles.length) return;
+      sections.push(Object.assign({articles}, div));
+    });
+    if(!flatDivisions.length) sections.push({articles: showing});
+
     return (
       <div className="Law-tabContent">
         <header>
           <SearchBox
             placeholder="法條搜尋"
             value={query}
-            onChange={text => this.setState({
-              query: text
-            })}
+            onChange={text => {
+              this.setState({query: text});
+              window.scroll(0, 0);
+            }}
           />
           <span className="Law-articlesAmount">
             {showing.length} 筆資料
           </span>
         </header>
         <main>
-          {showing.map(article =>
-            <Article key={article.number.toString()}
-              article={article}
-            />
+          {sections.map(sec =>
+            <section key={sec.type + sec.start}>
+              <DivisionHeader division={sec} />
+              {sec.articles.map(a => <Article key={a.number.toString()} article={a} />)}
+            </section>
           )}
         </main>
+      </div>
+    );
+  }
+}
+
+class DivisionHeader extends PureComponent {
+  render() {
+    const {division} = this.props;
+    if(!division.title) return null;
+    const ancestors = division.ancestors || [];
+    const divList = [...ancestors, division];
+    return (
+      <div className="DivisionHeader">
+        {divList.map(div =>
+          <div key={div.type + div.start}
+            className="DivisionHeader-part"
+          >
+            <div className="DivisionHeader-partNumber">第 {numf(div.number)} {div.type}</div>
+            <div className="DivisionHeader-partTitle">{div.title}</div>
+          </div>
+        )}
       </div>
     );
   }
@@ -138,9 +189,10 @@ class ArticlesTab extends PureComponent {
 class Article extends PureComponent {
   render() {
     const {article} = this.props;
+    const numText = numf(article.number);
     return (
       <dl className="Article">
-        <dt className="Article-number">第 {numf(article.number)} 條</dt>
+        <dt id={`article${numText}`} className="Article-number">第 {numText} 條</dt>
         <dd className="Article-content">
           <ParaList items={lawtext2obj(article.content)} />
         </dd>
@@ -188,7 +240,7 @@ class DivisionsTab extends PureComponent {
       return (
         <li key={div.type + div.start}>
           <Link className="DivisionItem"
-            to={`./?query=${numf(div.start)}~${numf(div.end)}`}
+            to={`${this.props.match.url}?query=${numf(div.start)}~${numf(div.end)}`}
           >
             <span className="DivisionItem-number">第 {numf(div.number)} {div.type}</span>
             <div className="DivisionItem-contentContainer">
@@ -196,7 +248,7 @@ class DivisionsTab extends PureComponent {
               <span className="DivisionItem-range">§§{numf(div.start)}～{numf(div.end)}</span>
             </div>
           </Link>
-          {div.children && <DivisionsTab divisions={div.children} />}
+          {div.children && <DivisionsTab {...this.props} divisions={div.children} />}
         </li>
       );
     });
@@ -205,18 +257,10 @@ class DivisionsTab extends PureComponent {
 }
 
 class History extends PureComponent {
-  constructor(props) {
-    super(props);
-    console.log('history');
-  }
-
-  componentWillUnmount() {
-    console.log('unmounting history');
-  }
-
   render() {
-    return (
-      <span>history</span>
+    const children = this.props.history.map((item, index) =>
+      <li key={index}>{item}</li>
     );
+    return <ol className="History">{children}</ol>;
   }
 }

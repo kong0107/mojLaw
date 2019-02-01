@@ -1,6 +1,6 @@
 {
   "name": "mojlaw",
-  "version": "0.3.0-dev",
+  "version": "0.3.0",
   "homepage": "https://kong0107.github.io/mojLaw",
   "dependencies": {
     "bootstrap": "^4.2.1",
