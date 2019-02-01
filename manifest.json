@@ -1,11 +1,11 @@
 {
-  "short_name": "React App",
-  "name": "Create React App Sample",
+  "short_name": "法規搜尋",
+  "name": "搜尋全國法規資料庫的資料",
   "icons": [
     {
-      "src": "favicon.ico",
-      "sizes": "64x64 32x32 24x24 16x16",
-      "type": "image/x-icon"
+      "src": "https://cdn.jsdelivr.net/gh/g0v/laweasyread-front/icon.png",
+      "sizes": "128x128",
+      "type": "image/png"
     }
   ],
   "start_url": ".",
