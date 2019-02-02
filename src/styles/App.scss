@@ -7,7 +7,10 @@ $footer-height: 2em;
 }
 
 .App {
-  @extend .container;
+  max-width: 1140px;
+  width: 100%;
+  padding: 0 15px 0 15px;
+  margin: 0 auto;
   background-color: $background-color;
 }
 

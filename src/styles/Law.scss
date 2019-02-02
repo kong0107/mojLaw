@@ -5,23 +5,20 @@
   position: sticky;
   top: 0;
   background-color: $background-color;
-  display: flex;
-  flex-direction: row-reverse;
-  justify-content: space-between;
   z-index: 2;
-}
+  display: flex;
+  align-items: flex-start;
 
-.Home-link {
-  font-size: small;
-  flex: none;
-}
+  .Home-link {
+    font-size: large;
+    padding: .2rem .3rem;
+  }
 
-.Law-title {
-  @extend .lead;
-  height: 2rem;
-
-  span {
-    margin-left: .5em;
+  .Law-title {
+    @extend .lead;
+    span.badge {
+      margin-left: .5em;
+    }
   }
 }
 
@@ -38,6 +35,22 @@
   bottom: 0;
   font-size: small;
   @extend .text-muted;
+}
+
+.Law-articlesSliderContainer {
+  display: none;
+}
+
+@media (orientation: portrait) {
+  .Law-articlesSliderContainer {
+    display: block;
+    position: sticky;
+    bottom: 0;
+    background-color: rgba($background-color, .75);
+    input {
+      width: 100%;
+    }
+  }
 }
 
 
