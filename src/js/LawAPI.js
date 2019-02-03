@@ -1,15 +1,20 @@
+import {
+  fetch2,
+  getFirstFulfilled
+} from './utility';
+
 const cdns = [
   'https://cdn.jsdelivr.net/gh/kong0107/mojLawSplitJSON@arranged/',
   'https://raw.githubusercontent.com/kong0107/mojLawSplitJSON/arranged/'
 ];
 
+/**
+ * 同時跟各個 CDN 要資料，只解析第一個成功的。
+ */
 const getData = path =>
-  Promise.race(
-    cdns.map(cdn => fetch(cdn + path, {cache: 'no-cache'}))
-  ).then(res => {
-    if(res.ok) return res.json();
-    else throw new ReferenceError(res.statusText);
-  });
+  getFirstFulfilled(
+    cdns.map(cdn => fetch2(cdn + path, {cache: 'no-cache'}))
+  ).then(res => res.json())
 ;
 
 const promises = new Map();

@@ -36,7 +36,7 @@ export const numf_reverse = text => {
   let result = parseInt(frags[0]) * 100;
   if(frags[1]) result += parseInt(frags[1]);
   return result;
-}
+};
 
 /**
  * @see {@link https://stackoverflow.com/questions/9083037/#answer-32851198 }
@@ -76,5 +76,20 @@ export const createFilterFunction = query => {
   };
   Object.assign(result, {yesList, noList});
   return result;
-}
+};
 
+/**
+ * Invert the polarity of the promise.
+ */
+export const invertPromise = promise =>
+  new Promise((res, rej) => promise.then(rej, res))
+;
+
+/**
+ * Get first fulfilled promise
+ * Can be assigned to `Promise.any`
+ * @see {@link https://stackoverflow.com/questions/39940152/ }
+ */
+export const getFirstFulfilled = promises =>
+  invertPromise(Promise.all(promises.map(invertPromise)))
+;
