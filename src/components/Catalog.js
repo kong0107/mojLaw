@@ -6,9 +6,8 @@ import {
 } from 'react-router-dom';
 
 import SearchBox from './SearchBox';
-import config from '../js/config';
+import LawAPI from '../js/LawAPI';
 import {
-  fetch2,
   errorHandler,
   createFilterFunction
 } from '../js/utility';
@@ -27,8 +26,7 @@ export default class Catalog extends PureComponent {
   }
 
   componentDidMount() {
-    fetch2(`${config.cdn}/index.json`)
-    .then(res => res.json())
+    LawAPI.loadCatalog()
     .then(catalog => this.setState(
       {catalog: catalog.sort((a, b) => b.lastUpdate - a.lastUpdate)}
     ))

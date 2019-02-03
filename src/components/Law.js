@@ -9,10 +9,8 @@ import {
 } from 'react-router-dom';
 
 import SearchBox from './SearchBox';
-import config from '../js/config';
 import {
   errorHandler,
-  fetch2,
   createFilterFunction,
   numf,
   numf_reverse
@@ -20,6 +18,7 @@ import {
 import lawtext2obj from '../js/lawtext2obj';
 
 import '../styles/Law.scss';
+import LawAPI from '../js/LawAPI';
 
 export default class Law extends PureComponent {
   constructor(props) {
@@ -35,8 +34,7 @@ export default class Law extends PureComponent {
   }
 
   componentDidMount() {
-    fetch2(`${config.cdn}/FalVMingLing/${this.props.match.params.pcode}.json`)
-    .then(res => res.json())
+    LawAPI.loadLaw(this.props.match.params.pcode)
     .then(law => {
       // 只留下編章節結構樹的葉子
       const flatDivisions = law.divisions.slice();
