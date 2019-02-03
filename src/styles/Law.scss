@@ -37,17 +37,45 @@
   @extend .text-muted;
 }
 
-.Law-articlesSliderContainer {
-  display: none;
+@media (orientation: landscape) and (min-width: $container-width) {
+  .Law-articlesSliderContainer {
+    display: none;
+  }
+}
+
+/**
+ * 行動裝置橫幅時，在右方顯示直條的 slider 。
+ */
+@media (orientation: landscape) and (max-width: $container-width) {
+  #main, .App > footer {
+    padding-right: 2rem;
+  }
+  main {
+    display: flex;
+  }
+  .Law-articlesSliderContainer {
+    position: fixed;
+    background-color: rgba($background-color, .75);
+    z-index: 3;
+    transform: rotate(90deg);
+    transform-origin: top right;
+    top: 100vh;
+    right: 0;
+    input {
+      height: 2rem;
+      width: 100vh;
+    }
+  }
+
 }
 
 @media (orientation: portrait) {
   .Law-articlesSliderContainer {
-    display: block;
     position: sticky;
     bottom: 0;
     background-color: rgba($background-color, .75);
     input {
+      height: 2rem;
       width: 100%;
     }
   }
