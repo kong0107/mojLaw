@@ -3,9 +3,9 @@ const cdns = [
   'https://raw.githubusercontent.com/kong0107/mojLawSplitJSON/arranged/'
 ];
 
-const getData = path => 
+const getData = path =>
   Promise.race(
-    cdns.map(cdn => fetch(cdn + path))
+    cdns.map(cdn => fetch(cdn + path, {cache: 'no-cache'}))
   ).then(res => {
     if(res.ok) return res.json();
     else throw new ReferenceError(res.statusText);

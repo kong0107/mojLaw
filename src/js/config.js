@@ -1,10 +1,6 @@
-const config = {};
-
-if(process.env.NODE_ENV === 'production') {
-    config.basename = '/mojLaw/';
-}
-else {
-    config.basename = '/kong0107/mojLaw/';
-}
+const config = {
+  siteName: '法規查詢',
+  basename: '/mojLaw/'
+};
 
 export default config;

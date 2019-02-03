@@ -31,7 +31,7 @@
 
 .Law-articlesAmount {
   position: absolute;
-  right: 0;
+  right: 1rem;
   bottom: 0;
   font-size: small;
   @extend .text-muted;
@@ -106,12 +106,9 @@
 
 .Article-number {
   position: sticky;
-  top: 3.6rem;
+  top: 0;
   background-color: rgba($background-color, .75);
-
-  /**
-   * @see {@link http://nicolasgallagher.com/jump-links-and-viewport-positioning/demo/ }
-   */
+  background-clip: content-box;
 }
 
 .Article-content {

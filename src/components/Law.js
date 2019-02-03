@@ -8,7 +8,7 @@ import {
   NavLink
 } from 'react-router-dom';
 
-import SearchBox from './SearchBox';
+import config from '../js/config';
 import {
   errorHandler,
   createFilterFunction,
@@ -16,9 +16,10 @@ import {
   numf_reverse
 } from '../js/utility';
 import lawtext2obj from '../js/lawtext2obj';
+import LawAPI from '../js/LawAPI';
+import SearchBox from './SearchBox';
 
 import '../styles/Law.scss';
-import LawAPI from '../js/LawAPI';
 
 export default class Law extends PureComponent {
   constructor(props) {
@@ -36,6 +37,8 @@ export default class Law extends PureComponent {
   componentDidMount() {
     LawAPI.loadLaw(this.props.match.params.pcode)
     .then(law => {
+      document.title = law.title;
+
       // 只留下編章節結構樹的葉子
       const flatDivisions = law.divisions.slice();
       for(let i = 0; i < flatDivisions.length;) {
@@ -51,6 +54,10 @@ export default class Law extends PureComponent {
       return this.setState({law});
     })
     .catch(errorHandler);
+  }
+
+  componentWillUnmount() {
+    document.title = config.siteName;
   }
 
   render() {
@@ -115,9 +122,16 @@ class ArticlesTab extends PureComponent {
         header.style.top = offset + 'px';
         articleOffset += header.offsetHeight;
       }
-      div.querySelectorAll('.Article-number').forEach(artHead => 
-        artHead.style.top = articleOffset + 'px'
-      );
+      /**
+       * 因應法條的 jump link 需求，設定 padding-top 和 margin-top 。
+       * 「剛好」因此不需要再動態設定條號的 sticky position 。
+       * @see {@link http://nicolasgallagher.com/jump-links-and-viewport-positioning/demo/ }
+       */
+      div.querySelectorAll('.Article').forEach(artHead => {
+        const s = artHead.style;
+        s.paddingTop = articleOffset + 'px';
+        s.marginTop = `-${articleOffset}px`;
+      });
     });
   }
 
@@ -184,13 +198,13 @@ class ArticlesTab extends PureComponent {
         <main>
           <div className="Law-articlesContainer">
             {sections.map(sec =>
-              <section key={sec.type + sec.start} className="Law-division">                
+              <section key={sec.type + sec.start} className="Law-division">
                 <DivisionHeader division={sec} />
                 {sec.articles.map(a => <Article key={a.number.toString()} article={a} />)}
               </section>
             )}
           </div>
-          <div className="Law-articlesSliderContainer">
+          <div className={showing.length > 2 ? 'Law-articlesSliderContainer' : 'd-none'}>
             <input type="range" min="0" max={showing.length - 1}
               onChange={event => {
                 const index = event.target.value;
@@ -230,8 +244,8 @@ class Article extends PureComponent {
     const {article} = this.props;
     const numText = numf(article.number);
     return (
-      <dl className="Article">
-        <dt id={`article${numText}`} className="Article-number">第 {numText} 條</dt>
+      <dl className="Article" id={`article${numText}`}>
+        <dt className="Article-number">第 {numText} 條</dt>
         <dd className="Article-content">
           <ParaList items={lawtext2obj(article.content)} />
         </dd>

@@ -5,12 +5,13 @@ import {
   Link
 } from 'react-router-dom';
 
-import SearchBox from './SearchBox';
-import LawAPI from '../js/LawAPI';
+import config from '../js/config';
 import {
   errorHandler,
   createFilterFunction
 } from '../js/utility';
+import LawAPI from '../js/LawAPI';
+import SearchBox from './SearchBox';
 
 import '../styles/Catalog.scss';
 
@@ -41,7 +42,8 @@ export default class Catalog extends PureComponent {
       <div className="Catalog">
         <header>
           <SearchBox
-            placeholder="法規搜尋"
+            placeholder={config.siteName}
+            value={this.state.query}
             onChange={text => this.setState({
               query: text,
               renderAmount: showBasicSize

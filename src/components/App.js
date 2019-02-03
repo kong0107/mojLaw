@@ -8,13 +8,16 @@ import {
   Switch
 } from 'react-router-dom';
 
+import config from '../js/config';
 import Catalog from './Catalog';
 import Law from './Law';
-
-import config from '../js/config';
 import '../styles/App.scss';
 
 class App extends PureComponent {
+  componentDidMount() {
+    document.title = config.siteName;
+  }
+
   render() {return (
     <div className="App">
       <div id="main">

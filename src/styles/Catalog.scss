@@ -2,7 +2,6 @@
 @import 'variables.scss';
 
 .Catalog > header {
-  padding-bottom: .5em;
   position: sticky;
   top: 0;
   background-color: $background-color;
@@ -11,7 +10,7 @@
 
 .Catalog-amount {
   position: absolute;
-  right: 0;
+  right: 1rem;
   bottom: 0;
   font-size: small;
   @extend .text-muted;
@@ -19,7 +18,7 @@
 
 .Catalog-list {
   margin: 0;
-  padding: 0;
+  padding: .5em 0 0 0 ;
   li {
     list-style-type: none;
     border-left: 2px solid #aaa;

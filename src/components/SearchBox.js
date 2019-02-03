@@ -18,6 +18,11 @@ export default class SearchBox extends PureComponent {
           placeholder={this.props.placeholder}
           onChange={event => this.props.onChange(event.target.value)}
         />
+        <span className={this.props.value ? '' : 'd-none'}
+          onClick={() => this.props.onChange('')}
+        >
+          <i className="fas fa-times-circle" />
+        </span>
       </div>
     );
   }
