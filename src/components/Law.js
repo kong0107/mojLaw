@@ -102,14 +102,35 @@ class ArticlesTab extends PureComponent {
     };
   }
 
-  componentDidUpdate() {
+  //設定各 sticky 元素的高度。因法規名稱和章節名稱都可能換行而造成不能把高度寫死。
+  setStickyElements() {
     const lawHeader = document.querySelector('.Law > header');
     const contentHeader = document.querySelector('.Law-tabContent > header');
     contentHeader.style.top = lawHeader.offsetHeight + 'px';
     const offset = lawHeader.offsetHeight + contentHeader.offsetHeight;
-    document.querySelectorAll('.DivisionHeader').forEach(divHead =>
-      divHead.style.top = offset + 'px'
-    );
+    document.querySelectorAll('section.Law-division').forEach(div => {
+      let articleOffset = offset;
+      const header = div.querySelector('.DivisionHeader');
+      if(header) {
+        header.style.top = offset + 'px';
+        articleOffset += header.offsetHeight;
+      }
+      div.querySelectorAll('.Article-number').forEach(artHead => 
+        artHead.style.top = articleOffset + 'px'
+      );
+    });
+  }
+
+  componentDidMount() {
+    window.addEventListener('resize', this.setStickyElements);
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener('resize', this.setStickyElements);
+  }
+
+  componentDidUpdate() {
+    this.setStickyElements();
   }
 
   render() {
@@ -163,7 +184,7 @@ class ArticlesTab extends PureComponent {
         <main>
           <div className="Law-articlesContainer">
             {sections.map(sec =>
-              <section key={sec.type + sec.start}>
+              <section key={sec.type + sec.start} className="Law-division">                
                 <DivisionHeader division={sec} />
                 {sec.articles.map(a => <Article key={a.number.toString()} article={a} />)}
               </section>
@@ -194,9 +215,7 @@ class DivisionHeader extends PureComponent {
     return (
       <div className="DivisionHeader">
         {divList.map(div =>
-          <div key={div.type + div.start}
-            className="DivisionHeader-part"
-          >
+          <div key={div.type + div.start} className="DivisionHeader-part">
             <div className="DivisionHeader-partNumber">第 {numf(div.number)} {div.type}</div>
             <div className="DivisionHeader-partTitle">{div.title}</div>
           </div>
