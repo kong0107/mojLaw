@@ -9,17 +9,25 @@
   display: flex;
   align-items: flex-start;
 
-  .Home-link {
+  .Home-link, .Setting-link {
     font-size: large;
     padding: .2rem .3rem;
   }
 
   .Law-title {
     @extend .lead;
+    flex: auto;
     span.badge {
       margin-left: .5em;
     }
   }
+}
+
+.Law-meta {
+  @extend .text-muted;
+  font-size: small;
+  display: flex;
+  justify-content: space-between;
 }
 
 .Law-tabContent > header {

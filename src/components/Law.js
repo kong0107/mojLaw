@@ -67,13 +67,18 @@ export default class Law extends PureComponent {
     return (
       <div className="Law">
         <header>
-          <Link className="Home-link" to="/"><i className="fas fa-arrow-left" /></Link>
+          <Link className="Home-link" to="/"><i className="fas fa-angle-left" /></Link>
           <div className="Law-title">
             {law.title || '讀取中'}
             {law.isDiscarded && <span className="badge badge-danger">已廢止</span> }
           </div>
+          <span className="Setting-link"><i className="fas fa-cog" /></span>
         </header>
-        <ul className="nav nav-tabs">
+        <div className={law.title ? 'Law-meta' : 'd-none'}>
+          <div>{law.lastUpdate}</div>
+          <div>{law.pcode}</div>
+        </div>
+        <ul className="Law-tabs nav nav-tabs">
           <li className="nav-item">
             <NavLink className="nav-link"
               to={match.url} exact
@@ -207,10 +212,8 @@ class ArticlesTab extends PureComponent {
           <div className={showing.length > 2 ? 'Law-articlesSliderContainer' : 'd-none'}>
             <input type="range" min="0" max={showing.length - 1}
               onChange={event => {
-                const index = event.target.value;
                 const articles = document.querySelectorAll('.Article');
-                const offset = articles[index].offsetTop - articles[0].offsetTop;
-                window.scroll(0, offset);
+                window.scroll(0, articles[event.target.value].offsetTop);
               }}
             />
           </div>
