@@ -112,11 +112,18 @@
   font-weight: bold;
 }
 
-.Article-number {
+.Article {
+  border-bottom: 1px solid #ccc;
+}
+
+.Article-header {
   position: sticky;
   top: 0;
   background-color: rgba($background-color, .75);
   background-clip: content-box;
+  z-index: 0;
+  display: flex;
+  justify-content: space-between;
 }
 
 .Article-content {

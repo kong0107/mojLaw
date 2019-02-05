@@ -129,13 +129,13 @@ class ArticlesTab extends PureComponent {
       }
       /**
        * 因應法條的 jump link 需求，設定 padding-top 和 margin-top 。
-       * 「剛好」因此不需要再動態設定條號的 sticky position 。
        * @see {@link http://nicolasgallagher.com/jump-links-and-viewport-positioning/demo/ }
        */
-      div.querySelectorAll('.Article').forEach(artHead => {
-        const s = artHead.style;
+      div.querySelectorAll('.Article').forEach(articleElement => {
+        const s = articleElement.style;
         s.paddingTop = articleOffset + 'px';
         s.marginTop = `-${articleOffset}px`;
+        articleElement.querySelector('.Article-header').style.top = articleOffset + 'px';
       });
     });
   }
@@ -205,11 +205,11 @@ class ArticlesTab extends PureComponent {
             {sections.map(sec =>
               <section key={sec.type + sec.start} className="Law-division">
                 <DivisionHeader division={sec} />
-                {sec.articles.map(a => <Article key={a.number.toString()} article={a} />)}
+                {sec.articles.map(a => <Article key={a.number.toString()} article={a} law={this.props.law} />)}
               </section>
             )}
           </div>
-          <div className={showing.length > 2 ? 'Law-articlesSliderContainer' : 'd-none'}>
+          <div className={showing.length > 2 ? 'Law-articlesSliderContainer d-print-none' : 'd-none'}>
             <input type="range" min="0" max={showing.length - 1}
               onChange={event => {
                 const articles = document.querySelectorAll('.Article');
@@ -243,12 +243,43 @@ class DivisionHeader extends PureComponent {
 }
 
 class Article extends PureComponent {
+  constructor(props) {
+    super(props);
+    this.copyContent = this.copyContent.bind(this);
+  }
+
+  copyContent() {
+    if(!navigator.clipboard) return;
+    const {article, law} = this.props;
+    const numText = numf(article.number);
+    const result = `${law.title} 第 ${numText} 條\n`
+      + article.content
+      + `\n${window.location.origin}${window.location.pathname}?query=${numText}`
+    ;
+    navigator.clipboard.writeText(result);
+  }
+
+
   render() {
-    const {article} = this.props;
+    const {article, law} = this.props;
     const numText = numf(article.number);
     return (
       <dl className="Article" id={`article${numText}`}>
-        <dt className="Article-number">第 {numText} 條</dt>
+        <dt className="Article-header">
+          <span className="Article-number">第 {numText} 條</span>
+          <div className="dropleft">
+            <button className="btn btn-sm"
+              type="button" id={`articleDropdownButton${numText}`} data-toggle="dropdown"
+              aria-haspopup="true" aria-expanded="false"
+            ><i className="fas fa-ellipsis-h" /></button>
+            <div className="dropdown-menu dropdown-menu-right" aria-labelledby={`articleDropdownButton${numText}`}>
+              <a className="dropdown-item" href={`?query=${numText}`}>法條連結</a>
+              <button className="dropdown-item" onClick={this.copyContent}
+              >複製內文</button>
+              <a className="dropdown-item" href={`https://law.moj.gov.tw/LawClass/LawSingle.aspx?pcode=${law.pcode}&flno=${numText}`}>全國法規資料庫</a>
+            </div>
+          </div>
+        </dt>
         <dd className="Article-content">
           <ParaList items={lawtext2obj(article.content)} />
         </dd>
