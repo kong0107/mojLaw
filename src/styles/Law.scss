@@ -112,7 +112,7 @@
   font-weight: bold;
 }
 
-.Article {
+.Article:not(:last-of-type) {
   border-bottom: 1px solid #ccc;
 }
 
@@ -124,6 +124,12 @@
   z-index: 0;
   display: flex;
   justify-content: space-between;
+  pointer-events: none; // https://stackoverflow.com/questions/54545183/
+
+  .dropdown {
+    pointer-events: auto;
+    outline: none;
+  }
 }
 
 .Article-content {

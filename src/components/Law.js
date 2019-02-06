@@ -267,7 +267,7 @@ class Article extends PureComponent {
       <dl className="Article" id={`article${numText}`}>
         <dt className="Article-header">
           <span className="Article-number">第 {numText} 條</span>
-          <div className="dropleft">
+          <div className="dropleft dropdown">
             <button className="btn btn-sm"
               type="button" id={`articleDropdownButton${numText}`} data-toggle="dropdown"
               aria-haspopup="true" aria-expanded="false"
