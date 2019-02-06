@@ -72,32 +72,36 @@ export default class Law extends PureComponent {
             {law.title || '讀取中'}
             {law.isDiscarded && <span className="badge badge-danger">已廢止</span> }
           </div>
-          <span className="Setting-link"><i className="fas fa-cog" /></span>
+          <div className="Setting-link dropdown">
+            <span data-toggle="dropdown" id="lawDropdownMenuButton"
+              aria-haspopup="true" aria-expanded="false"
+            ><i className="fas fa-ellipsis-v" /></span>
+            <div className="dropdown-menu dropdown-menu-right"
+              aria-labelledby="lawDropdownMenuButton"
+            >
+              <div className="dropdown-item disabled small">
+                更新日期：{law.lastUpdate}
+              </div>
+              <NavLink className="dropdown-item"
+                to={match.url} exact
+                activeClassName="d-none"
+              >條文</NavLink>
+              <NavLink className={law.divisions.length ? 'dropdown-item' : 'd-none'}
+                to={`${match.url}/divisions`}
+                activeClassName="d-none"
+              >編章節</NavLink>
+              <NavLink className="dropdown-item"
+                to={`${match.url}/history`}
+                activeClassName="d-none"
+              >沿革</NavLink>
+              <a className="dropdown-item"
+                href={`https://law.moj.gov.tw/LawClass/LawAll.aspx?pcode=${law.pcode}`}
+              >全國法規資料庫<i className="pl-1 fas fa-external-link-alt" /></a>
+            </div>
+          </div>
         </header>
-        <div className={law.title ? 'Law-meta' : 'd-none'}>
-          <div>{law.lastUpdate}</div>
-          <div>{law.pcode}</div>
-        </div>
-        <ul className="Law-tabs nav nav-tabs">
-          <li className="nav-item">
-            <NavLink className="nav-link"
-              to={match.url} exact
-              onClick={() => window.location.reload()}
-            >條文</NavLink>
-          </li>
-          <li className={law.divisions.length ? 'nav-item' : 'd-none'}>
-            <NavLink className="nav-link"
-              to={`${match.url}/divisions`}
-            >編章節</NavLink>
-          </li>
-          <li className="nav-item">
-            <NavLink className="nav-link"
-              to={`${match.url}/history`}
-            >沿革</NavLink>
-          </li>
-        </ul>
         <Switch>
-          <Route path={match.path} exact render={() => <ArticlesTab law={law} />} />
+          <Route path={match.path} exact render={() => <ArticlesTab {...this.props} law={law} />} />
           <Route path={`${match.path}/divisions`} render={() => <DivisionsTab {...this.props} divisions={law.divisions} />} />
           <Route path={`${match.path}/history`} children={() => <History history={law.history} />} />
         </Switch>
@@ -140,8 +144,18 @@ class ArticlesTab extends PureComponent {
     });
   }
 
+  scrollToHash() {
+    const hash = window.location.hash;
+    if(hash) {
+      const target = document.querySelector(hash);
+      if(target) window.scroll(0, target.offsetTop);
+    }
+  }
+
   componentDidMount() {
     window.addEventListener('resize', this.setStickyElements);
+    this.setStickyElements();
+    this.scrollToHash();
   }
 
   componentWillUnmount() {
@@ -150,11 +164,13 @@ class ArticlesTab extends PureComponent {
 
   componentDidUpdate() {
     this.setStickyElements();
+    this.scrollToHash();
   }
 
   render() {
     const query = this.state.query;
-    const {articles, flatDivisions} = this.props.law;
+    const {articles, flatDivisions, preamble} = this.props.law;
+    const preambleObj = preamble && {number: 0, content: preamble};
 
     let showing = [];
     if(/^[\s\-\d.~,]+$/.test(query)) {
@@ -162,11 +178,15 @@ class ArticlesTab extends PureComponent {
       query.replace(/\s+/g, '').split(',').forEach(numOrRange => {
         const endpoints = numOrRange.split('~');
         if(endpoints.length === 1) {
-          const target = articles.find(a => a.number === numf_reverse(numOrRange));
-          if(target) showing.push(target);
+          if(preamble && numOrRange === '0') showing.push(preambleObj);
+          else {
+            const target = articles.find(a => a.number === numf_reverse(numOrRange));
+            if(target) showing.push(target);
+          }
         }
         else {
           const [start, end] = endpoints.map(numf_reverse);
+          if(preamble && start === 0) showing.unshift(preambleObj);
           showing.push(...articles.filter(a => a.number >= start && a.number <= end));
         }
         showing.sort((a, b) => a.number - b.number);
@@ -175,6 +195,7 @@ class ArticlesTab extends PureComponent {
     else {
       const testFunc = createFilterFunction(query);
       showing = this.props.law.articles.filter(a => testFunc(a.content));
+      if(preamble && testFunc(preamble)) showing.unshift(preambleObj);
     }
 
     const sections = [];
@@ -184,6 +205,10 @@ class ArticlesTab extends PureComponent {
       sections.push(Object.assign({articles}, div));
     });
     if(!flatDivisions.length) sections.push({articles: showing});
+
+    // 前言
+    if(showing.length && !showing[0].number)
+      sections.unshift({articles: [showing[0]]});
 
     return (
       <div className="Law-tabContent">
@@ -252,7 +277,8 @@ class Article extends PureComponent {
     if(!navigator.clipboard) return;
     const {article, law} = this.props;
     const numText = numf(article.number);
-    const result = `${law.title} 第 ${numText} 條\n`
+    const result = law.title + ' '
+      + (article.number ? `第 ${numText} 條` : '前言') + '\n'
       + article.content
       + `\n${window.location.origin}${window.location.pathname}?query=${numText}`
     ;
@@ -266,17 +292,18 @@ class Article extends PureComponent {
     return (
       <dl className="Article" id={`article${numText}`}>
         <dt className="Article-header">
-          <span className="Article-number">第 {numText} 條</span>
+          <span className="Article-number">{article.number ? `第 ${numText} 條` : '前言'}</span>
           <div className="dropleft dropdown">
-            <button className="btn btn-sm"
-              type="button" id={`articleDropdownButton${numText}`} data-toggle="dropdown"
+            <span data-toggle="dropdown" id={`articleDropdownButton${numText}`}
               aria-haspopup="true" aria-expanded="false"
-            ><i className="fas fa-ellipsis-h" /></button>
+            ><i className="fas fa-ellipsis-v" /></span>
             <div className="dropdown-menu dropdown-menu-right" aria-labelledby={`articleDropdownButton${numText}`}>
               <a className="dropdown-item" href={`?query=${numText}`}>法條連結</a>
               <button className="dropdown-item" onClick={this.copyContent}
               >複製內文</button>
-              <a className="dropdown-item" href={`https://law.moj.gov.tw/LawClass/LawSingle.aspx?pcode=${law.pcode}&flno=${numText}`}>全國法規資料庫</a>
+              <a className="dropdown-item"
+                href={`https://law.moj.gov.tw/LawClass/LawSingle.aspx?pcode=${law.pcode}&flno=${numText}`}
+              >全國法規資料庫<i className="pl-1 fas fa-external-link-alt" /></a>
             </div>
           </div>
         </dt>
@@ -327,7 +354,7 @@ class DivisionsTab extends PureComponent {
       return (
         <li key={div.type + div.start}>
           <Link className="DivisionItem"
-            to={`${this.props.match.url}?query=${numf(div.start)}~${numf(div.end)}`}
+            to={`${this.props.match.url}#article${numf(div.start)}`}
           >
             <span className="DivisionItem-number">第 {numf(div.number)} {div.type}</span>
             <div className="DivisionItem-contentContainer">

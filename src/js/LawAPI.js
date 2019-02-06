@@ -4,6 +4,7 @@ import {
 } from './utility';
 
 const cdns = [
+  //'http://localhost/kong0107/mojLawSplit/json_arrange/',
   'https://cdn.jsdelivr.net/gh/kong0107/mojLawSplitJSON@arranged/',
   'https://raw.githubusercontent.com/kong0107/mojLawSplitJSON/arranged/'
 ];

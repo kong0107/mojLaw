@@ -5,12 +5,16 @@
   position: sticky;
   top: 0;
   background-color: $background-color;
-  z-index: 2;
+  z-index: 3;
   display: flex;
   align-items: flex-start;
 
-  .Home-link, .Setting-link {
+  .Home-link {
     font-size: large;
+    padding: .2rem .3rem;
+  }
+
+  .Setting-link {
     padding: .2rem .3rem;
   }
 
@@ -128,7 +132,6 @@
 
   .dropdown {
     pointer-events: auto;
-    outline: none;
   }
 }
 
