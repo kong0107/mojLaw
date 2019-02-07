@@ -6,10 +6,14 @@
   align-items: center;
 }
 
-.SearchBox-input {
-  flex: auto;
-  background-color: transparent;
+.SearchBox-inputContainer {
+  flex: 1;
   margin-left: .5em;
+}
+
+.SearchBox-input {
+  width: 100%;
+  background-color: transparent;
   border: none;
   outline: none;
 }

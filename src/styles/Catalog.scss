@@ -5,15 +5,25 @@
   position: sticky;
   top: 0;
   background-color: $background-color;
-  border-bottom: 1px solid #aaa;
-}
+  display: flex;
 
-.Catalog-amount {
-  position: absolute;
-  right: 1rem;
-  bottom: 0;
-  font-size: small;
-  @extend .text-muted;
+  .title {
+    @extend .lead;
+    margin-right: 1em;
+  }
+
+  .SearchBox {
+    flex: 1;
+    border-bottom: 1px solid #aaa;
+  }
+
+  .Catalog-amount {
+    position: absolute;
+    right: 1rem;
+    bottom: 0;
+    font-size: small;
+    @extend .text-muted;
+  }
 }
 
 .Catalog-list {
@@ -26,10 +36,18 @@
     padding-bottom: .25em;
     padding-left: .75em;
   }
+
+  a {
+    color: inherit;
+  }
+
+  .badge {
+    margin-right: .5em;
+  }
 }
 
 .CatalogItem:hover {
-  background-color: #eee;
+  background-color: #ddd;
 }
 
 .CatalogItem-link:hover {

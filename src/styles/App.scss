@@ -16,6 +16,7 @@ $footer-height: 2em;
 
 #main {
   min-height: calc(100vh - #{$footer-height});
+  padding-bottom: 2rem;
 }
 
 .App > footer {
@@ -32,4 +33,8 @@ $footer-height: 2em;
 
 .small {
   font-size: .8rem;
+}
+
+button, .btn {
+  outline: none;
 }

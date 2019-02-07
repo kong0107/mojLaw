@@ -73,9 +73,10 @@ export default class Law extends PureComponent {
             {law.isDiscarded && <span className="badge badge-danger">已廢止</span> }
           </div>
           <div className="Setting-link dropdown">
-            <span data-toggle="dropdown" id="lawDropdownMenuButton"
+            <button className="btn btn-sm" type="button"
+              data-toggle="dropdown" id="lawDropdownMenuButton"
               aria-haspopup="true" aria-expanded="false"
-            ><i className="fas fa-ellipsis-v" /></span>
+            ><i className="fas fa-ellipsis-v" /></button>
             <div className="dropdown-menu dropdown-menu-right"
               aria-labelledby="lawDropdownMenuButton"
             >
@@ -205,9 +206,7 @@ class ArticlesTab extends PureComponent {
       sections.push(Object.assign({articles}, div));
     });
     if(!flatDivisions.length) sections.push({articles: showing});
-
-    // 前言
-    if(showing.length && !showing[0].number)
+    else if(showing.length && !showing[0].number) // 前言
       sections.unshift({articles: [showing[0]]});
 
     return (
@@ -294,9 +293,10 @@ class Article extends PureComponent {
         <dt className="Article-header">
           <span className="Article-number">{article.number ? `第 ${numText} 條` : '前言'}</span>
           <div className="dropleft dropdown">
-            <span data-toggle="dropdown" id={`articleDropdownButton${numText}`}
+            <button className="btn btn-sm" type="button"
+              data-toggle="dropdown" id={`articleDropdownButton${numText}`}
               aria-haspopup="true" aria-expanded="false"
-            ><i className="fas fa-ellipsis-v" /></span>
+            ><i className="fas fa-ellipsis-v" /></button>
             <div className="dropdown-menu dropdown-menu-right" aria-labelledby={`articleDropdownButton${numText}`}>
               <a className="dropdown-item" href={`?query=${numText}`}>法條連結</a>
               <button className="dropdown-item" onClick={this.copyContent}
