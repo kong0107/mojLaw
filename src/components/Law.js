@@ -131,12 +131,6 @@ export default class Law extends PureComponent {
 }
 
 class ArticlesTab extends PureComponent {
-  constructor(props) {
-    super(props);
-    this.state = {
-      query: (new URLSearchParams(window.location.search)).get('query') || ''
-    };
-  }
 
   //設定各 sticky 元素的高度。因法規名稱和章節名稱都可能換行而造成不能把高度寫死。
   setStickyElements() {
@@ -188,7 +182,7 @@ class ArticlesTab extends PureComponent {
   }
 
   render() {
-    const query = this.state.query;
+    const query = (new URLSearchParams(this.props.location.search)).get('query') || '';
     const {articles, flatDivisions, preamble} = this.props.law;
     const preambleObj = preamble && {number: 0, content: preamble};
 
@@ -372,7 +366,6 @@ class Paragraph extends PureComponent {
     //return <p>{this.props.children}</p>;
 
     const frags = [this.props.children];
-    let counter = 0;
 
     // 在提及其他法律的地方切斷
     this.props.catalog.forEach(law => {
@@ -385,7 +378,7 @@ class Paragraph extends PureComponent {
         // 刪掉原本的，替換成更小的碎片。
         frags.splice(i, 1,
           frags[i].substring(0, pos),
-          <Link key={counter++} to={'/laws/' + law.pcode}>{law.name}</Link>,
+          law,
           frags[i].substring(pos + law.name.length)
         );
       }
@@ -417,14 +410,46 @@ class Paragraph extends PureComponent {
 
         frags.splice(i, 1,
           frags[i].substring(0, match.index),
-          <span key={counter++} style={{color: 'green'}}>{numberedText}</span>,
+          {ranges, numberedText, origin: match[0]},
           frags[i].substring(match.index + match[0].length)
         );
         ++i;
       }
     }
 
-    return <p>{frags}</p>;
+    const children = [];
+    frags.filter(f => f).forEach((frag, index, frags) => {
+      if(!frag) return;
+      if(typeof frag === 'string') {
+        if(typeof children[children.length - 1] === 'string')
+          children[children.length - 1] += frag;
+        else children.push(frag);
+        return;
+      }
+      if(frag.pcode) {
+        return children.push(
+          <Link key={index} to={'/laws/' + frag.pcode}>{frag.name}</Link>
+        );
+      }
+      if(frag.ranges) {
+        if(!frag.ranges.length) {
+          return children.push(
+            <span key={index} style={{color: 'green'}}>{frag.numberedText}</span>
+          );
+        }
+        const query = frag.ranges.reduce((acc, cur) => {
+          if(acc) acc += ',';
+          if(typeof cur === 'number') return acc + numf(cur);
+          else return acc + cur.map(numf).join('~');
+        }, '');
+        const law = (index && frags[index - 1].pcode) ? frags[index - 1] : this.props.law;
+        children.push(<Link key={index} to={`/laws/${law.pcode}?query=${query}`}>{frag.numberedText}</Link>);
+        return;
+      }
+      throw new RangeError('Unkown frag');
+    });
+
+    return <p>{children}</p>;
   }
 }
 
