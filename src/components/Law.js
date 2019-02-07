@@ -7,6 +7,7 @@ import {
   Link,
   NavLink
 } from 'react-router-dom';
+import cpi from 'chinese-parseint';
 
 import config from '../js/config';
 import {
@@ -25,7 +26,8 @@ export default class Law extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
-      law:{
+      catalog: [],
+      law: {
         articles: [],
         divisions: [],
         flatDivisions: [],
@@ -35,9 +37,20 @@ export default class Law extends PureComponent {
   }
 
   componentDidMount() {
+    LawAPI.loadCatalog()
+    .then(catalog => this.setState(
+      {catalog: catalog.sort((a, b) => b.name.length - a.name.length)}
+    ))
+    .catch(errorHandler);
+  }
+
+  componentDidUpdate() {
+    const pcode = this.props.match.params.pcode;
+    if(pcode === this.state.law.pcode) return;
     LawAPI.loadLaw(this.props.match.params.pcode)
     .then(law => {
       document.title = law.title;
+      window.scroll(0, 0); // 否則會停在前一個法規的卷軸位置。
 
       // 只留下編章節結構樹的葉子
       const flatDivisions = law.divisions.slice();
@@ -51,7 +64,8 @@ export default class Law extends PureComponent {
         else ++i;
       }
       law.flatDivisions = flatDivisions;
-      return this.setState({law});
+
+      this.setState({law});
     })
     .catch(errorHandler);
   }
@@ -72,7 +86,12 @@ export default class Law extends PureComponent {
             {law.title || '讀取中'}
             {law.isDiscarded && <span className="badge badge-danger">已廢止</span> }
           </div>
-          <div className="Setting-link dropdown">
+          <div className="d-none Law-headerSearchButton">
+            <button className="btn btn-sm" type="button">
+              <i className="fas fa-search" />
+            </button>
+          </div>
+          <div className="dropdown">
             <button className="btn btn-sm" type="button"
               data-toggle="dropdown" id="lawDropdownMenuButton"
               aria-haspopup="true" aria-expanded="false"
@@ -102,8 +121,8 @@ export default class Law extends PureComponent {
           </div>
         </header>
         <Switch>
-          <Route path={match.path} exact render={() => <ArticlesTab {...this.props} law={law} />} />
-          <Route path={`${match.path}/divisions`} render={() => <DivisionsTab {...this.props} divisions={law.divisions} />} />
+          <Route path={match.path} exact children={routeProps => <ArticlesTab {...routeProps} law={law} catalog={this.state.catalog} />} />
+          <Route path={`${match.path}/divisions`} children={routeProps => <DivisionsTab {...routeProps} divisions={law.divisions} />} />
           <Route path={`${match.path}/history`} children={() => <History history={law.history} />} />
         </Switch>
       </div>
@@ -229,7 +248,7 @@ class ArticlesTab extends PureComponent {
             {sections.map(sec =>
               <section key={sec.type + sec.start} className="Law-division">
                 <DivisionHeader division={sec} />
-                {sec.articles.map(a => <Article key={a.number.toString()} article={a} law={this.props.law} />)}
+                {sec.articles.map(a => <Article key={a.number.toString()} {...this.props} article={a} />)}
               </section>
             )}
           </div>
@@ -298,7 +317,7 @@ class Article extends PureComponent {
               aria-haspopup="true" aria-expanded="false"
             ><i className="fas fa-ellipsis-v" /></button>
             <div className="dropdown-menu dropdown-menu-right" aria-labelledby={`articleDropdownButton${numText}`}>
-              <a className="dropdown-item" href={`?query=${numText}`}>法條連結</a>
+              <Link className="dropdown-item" to={`${this.props.match.url}?query=${numText}`}>法條連結</Link>
               <button className="dropdown-item" onClick={this.copyContent}
               >複製內文</button>
               <a className="dropdown-item"
@@ -308,7 +327,7 @@ class Article extends PureComponent {
           </div>
         </dt>
         <dd className="Article-content">
-          <ParaList items={lawtext2obj(article.content)} />
+          <ParaList {...this.props} items={lawtext2obj(article.content)} />
         </dd>
       </dl>
     );
@@ -336,8 +355,8 @@ class ParaList extends PureComponent {
           <dl>
             <dt>{ordinal}</dt>
             <dd>
-              {text.split('\n').map((p, j) => <p key={j}>{p}</p>)}
-              {item.children && <ParaList items={item.children} />}
+              {text.split('\n').map((p, j) => <Paragraph key={j} {...this.props}>{p}</Paragraph>)}
+              {item.children && <ParaList {...this.props} items={item.children} />}
             </dd>
           </dl>
         </li>
@@ -347,25 +366,86 @@ class ParaList extends PureComponent {
   }
 }
 
+const reArtNum = /(第[一二三四五六七八九十百千]+[條項類款目](之[一二三四五六七八九十]+)?)+([、及與或至](第([一二三四五六七八九十百千]+)[條項類款目](之[一二三四五六七八九十]+)?)+)*/;
+class Paragraph extends PureComponent {
+  render() {
+    //return <p>{this.props.children}</p>;
+
+    const frags = [this.props.children];
+    let counter = 0;
+
+    // 在提及其他法律的地方切斷
+    this.props.catalog.forEach(law => {
+      for(let i = 0; i < frags.length; ++i) {
+        if(typeof frags[i] !== 'string') continue;
+        if(frags[i].length < law.name.length) continue;
+        const pos = frags[i].indexOf(law.name);
+        if(pos === -1) continue;
+
+        // 刪掉原本的，替換成更小的碎片。
+        frags.splice(i, 1,
+          frags[i].substring(0, pos),
+          <Link key={counter++} to={'/laws/' + law.pcode}>{law.name}</Link>,
+          frags[i].substring(pos + law.name.length)
+        );
+      }
+    });
+
+    // 在提及其他法條的地方切斷
+    for(let i = 0; i < frags.length; ++i) {
+      if(typeof frags[i] !== 'string') continue;
+      const match = reArtNum.exec(frags[i]);
+      if(match) {
+        const ranges = [];
+        /**
+         * 分析提到哪些條文
+         * 最後如為 [307, 400, [1003, 1100]]
+         * 則表示第三條之七、第四條、第十條之三至第十一條
+         */
+        // 分析提到哪些條文
+        match[0].split(/[、及與或]/).forEach(s => {
+          const re = /第([一二三四五六七八九十百千]+)條(之([一二三四五六七八九十]+))?/g;
+          const mm = re.exec(s), mm2 = re.exec(s);
+          if(!mm) return; // 沒有提到任何「條」
+          const start = cpi(mm[1]) * 100 + cpi(mm[2] ? mm[3] : 0);
+          if(!mm2) return ranges.push(start); // 只有提到一條
+          const end = cpi(mm2[1]) * 100 + cpi(mm2[2] ? mm2[3] : 0);
+          ranges.push([start, end]); // 提及一個範圍
+        });
+
+        const numberedText = match[0].replace(/[一二三四五六七八九十百千]+/g, cn => ` ${cpi(cn)} `);
+
+        frags.splice(i, 1,
+          frags[i].substring(0, match.index),
+          <span key={counter++} style={{color: 'green'}}>{numberedText}</span>,
+          frags[i].substring(match.index + match[0].length)
+        );
+        ++i;
+      }
+    }
+
+    return <p>{frags}</p>;
+  }
+}
+
 
 class DivisionsTab extends PureComponent {
   render() {
-    const children = this.props.divisions.map(div => {
-      return (
-        <li key={div.type + div.start}>
-          <Link className="DivisionItem"
-            to={`${this.props.match.url}#article${numf(div.start)}`}
-          >
-            <span className="DivisionItem-number">第 {numf(div.number)} {div.type}</span>
-            <div className="DivisionItem-contentContainer">
-              <span className="DivisionItem-title">{div.title}</span>
-              <span className="DivisionItem-range">§§{numf(div.start)}～{numf(div.end)}</span>
-            </div>
-          </Link>
-          {div.children && <DivisionsTab {...this.props} divisions={div.children} />}
-        </li>
-      );
-    });
+    const {pcode} = this.props.match.params;
+    const children = this.props.divisions.map(div =>
+      <li key={div.type + div.start}>
+        <Link className="DivisionItem"
+          to={`/laws/${pcode}#article${numf(div.start)}`}
+        >
+          <span className="DivisionItem-number">第 {numf(div.number)} {div.type}</span>
+          <div className="DivisionItem-contentContainer">
+            <span className="DivisionItem-title">{div.title}</span>
+            <span className="DivisionItem-range">§§{numf(div.start)}～{numf(div.end)}</span>
+          </div>
+        </Link>
+        {div.children && <DivisionsTab {...this.props} divisions={div.children} />}
+      </li>
+    );
     return <ol className="DivisionList">{children}</ol>;
   }
 }

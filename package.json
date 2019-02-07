@@ -1,9 +1,10 @@
 {
   "name": "mojlaw",
-  "version": "0.3.8",
+  "version": "0.4.0",
   "homepage": "https://kong0107.github.io/mojLaw",
   "dependencies": {
     "bootstrap": "^4.2.1",
+    "chinese-parseint": "^1.1.0",
     "node-sass": "^4.11.0",
     "react": "^16.7.0",
     "react-dom": "^16.7.0",
